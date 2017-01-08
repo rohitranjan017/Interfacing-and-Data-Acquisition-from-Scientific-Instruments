@@ -72,7 +72,7 @@ void clo()
     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    //system(./start.sh);
+    //system(./script.sh);
 
 }
 void pre()

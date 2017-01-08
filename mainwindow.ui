@@ -633,11 +633,6 @@
        <string>20V .2A</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>Auto</string>
-      </property>
-     </item>
     </widget>
     <widget class="QDoubleSpinBox" name="doubleSpinBox_14">
      <property name="geometry">
