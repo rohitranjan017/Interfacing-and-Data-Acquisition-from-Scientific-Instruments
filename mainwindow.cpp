@@ -187,7 +187,7 @@ void MainWindow::on_out1mode_clicked()
 {
     if(mode1==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out1mode->setIcon(ButtonIcon);
         ui->out1mode->setIconSize(QSize(61,31));
@@ -198,7 +198,7 @@ void MainWindow::on_out1mode_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out1mode->setIcon(ButtonIcon);
         ui->out1mode->setIconSize(QSize(61,31));
@@ -306,7 +306,7 @@ void MainWindow::on_out2mode_clicked()
 {
     if(mode2==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode->setIcon(ButtonIcon);
         ui->out2mode->setIconSize(QSize(61,31));
@@ -317,7 +317,7 @@ void MainWindow::on_out2mode_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode->setIcon(ButtonIcon);
         ui->out2mode->setIconSize(QSize(61,31));
@@ -424,7 +424,7 @@ void MainWindow::on_out2mode_2_clicked()
 {
     if(inmode1==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_2->setIcon(ButtonIcon);
         ui->out2mode_2->setIconSize(QSize(61,31));
@@ -435,7 +435,7 @@ void MainWindow::on_out2mode_2_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_2->setIcon(ButtonIcon);
         ui->out2mode_2->setIconSize(QSize(61,31));
@@ -452,7 +452,7 @@ void MainWindow::on_out2mode_6_clicked()
 {
     if(inmode2==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_6->setIcon(ButtonIcon);
         ui->out2mode_6->setIconSize(QSize(61,31));
@@ -463,7 +463,7 @@ void MainWindow::on_out2mode_6_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_6->setIcon(ButtonIcon);
         ui->out2mode_6->setIconSize(QSize(61,31));
@@ -480,7 +480,7 @@ void MainWindow::on_out2mode_10_clicked()
 {
     if(inmode3==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_10->setIcon(ButtonIcon);
         ui->out2mode_10->setIconSize(QSize(61,31));
@@ -491,7 +491,7 @@ void MainWindow::on_out2mode_10_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_10->setIcon(ButtonIcon);
         ui->out2mode_10->setIconSize(QSize(61,31));
@@ -508,7 +508,7 @@ void MainWindow::on_out2mode_9_clicked()
 {
     if(inmode4==0)
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on.jpg");
+        QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_9->setIcon(ButtonIcon);
         ui->out2mode_9->setIconSize(QSize(61,31));
@@ -519,7 +519,7 @@ void MainWindow::on_out2mode_9_clicked()
     }
     else
     {
-        QPixmap pixmap("/home/dell/Desktop/Project/CTC100/on-off.jpg");
+        QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_9->setIcon(ButtonIcon);
         ui->out2mode_9->setIconSize(QSize(61,31));
