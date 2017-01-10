@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 char c1='R',c2='R',c3='R',c4='R';
 bool z;
 bool mode1;
@@ -20,7 +21,7 @@ void con()
 
    out<<"#!/usr/bin/expect\n";
    out<<"spawn telnet 100.10.19.37\n";
-   out<<"sleep 1\n";
+   out<<"sleep 0.5\n";
    out<<"send ";
    out<<"\"";
    out<<"\\n";
@@ -37,7 +38,7 @@ void clo()
 {
 
     //connection terminating code starts//
-    out<<"sleep 1\n";
+    out<<"sleep 0.5\n";
     out<<"send ";
     out<<"\"";
     out<<"\\";
@@ -72,7 +73,7 @@ void clo()
     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    //system(./script.sh);
+    system("./script.sh\n");
 
 }
 void pre()
@@ -152,13 +153,188 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_connect_clicked()
 {
     con();
+//Output1
+    outs("Out1.PID.mode?");
+    outs("Out1.Range?");
+    outs("Out1.LowLmt?");
+    outs("Out1.HiLmt?");
+    outs("Out1.PID.Input?");
+    outs("Out1.PID.Setpoint?");
+    outs("Out1.PID.ramp?");
+    outs("Out1.PID.P?");
+    outs("Out1.PID.I?");
+    outs("Out1.PID.D?");
+//Output2
+    outs("Out2.PID.mode?");
+    outs("Out2.Range?");
+    outs("Out2.LowLmt?");
+    outs("Out2.HiLmt?");
+    outs("Out2.PID.Input?");
+    outs("Out2.PID.Setpoint?");
+    outs("Out2.PID.ramp?");
+    outs("Out2.PID.P?");
+    outs("Out2.PID.I?");
+    outs("Out2.PID.D?");
+//Input1
+    outs("In1.selected?");
+    outs("In1.Sensor?");
+    outs("In1.Range?");
+//Input2
+    outs("In2.selected?");
+    outs("In2.Sensor?");
+    outs("In2.Range?");
+//Input3
+    outs("In3.selected?");
+    outs("In3.Sensor?");
+    outs("In3.Range?");
+//Input4
+    outs("In4.selected?");
+    outs("In4.Sensor?");
+    outs("In4.Range?");
 
     ui->connect->setStyleSheet("background-color:green");
-
 
     outs("popup CONNECTED!!!");
 
     clo();
+
+    QFile file("/home/prajwal/Desktop/project/build-CTC100-Desktop_Qt_5_7_1_GCC_64bit-Debug/o.txt");
+
+  QString s[40];
+  int j=0;
+    file.open(QIODevice::ReadOnly);
+
+      while (!file.atEnd())
+      {
+
+               char a[1025];
+
+                   file.readLine(a,sizeof(a));
+
+                   QString temp;
+
+                   for(uint i=0;i<qstrlen(a)-3;i++)
+                    temp=temp+a[i];
+                  // qDebug()<<temp;
+
+                   if(temp=="Error: \"Ã»Ã»\" is not a valid instruction")
+                   {
+                       int k=0;
+
+                      while(k<33)
+                      {
+                             file.readLine(a,sizeof(a));
+
+
+
+
+
+                              for(uint i=0;i<qstrlen(a)-3;i++)
+                            s[j]=s[j]+a[i];
+
+                            j++;
+
+                            qDebug()<<s[j-1];
+
+
+                          k++;
+                      }
+
+                      break;
+                   }
+
+      }
+//Output1
+
+      if(s[0]=="On")
+      {
+          mode1=1;
+
+          on_out1mode_clicked();
+      }
+
+      ui->comboBox->setCurrentText(s[1]);
+
+      ui->doubleSpinBox->setValue(s[2].toDouble());
+
+      ui->doubleSpinBox_2->setValue(s[3].toDouble());
+
+      ui->comboBox_2->setCurrentText(s[4]);
+
+      ui->doubleSpinBox_6->setValue(s[5].toDouble());
+
+      ui->doubleSpinBox_9->setValue(s[6].toDouble());
+
+      ui->doubleSpinBox_11->setValue(s[7].toDouble());
+
+      ui->doubleSpinBox_12->setValue(s[8].toDouble());
+
+      ui->doubleSpinBox_13->setValue(s[9].toDouble());
+
+//Output2
+
+      if(s[10]=="On")
+      {
+          mode2=1;
+
+          on_out2mode_clicked();
+      }
+
+      ui->comboBox_5->setCurrentText(s[11]);
+
+      ui->doubleSpinBox_14->setValue(s[12].toDouble());
+
+      ui->doubleSpinBox_15->setValue(s[13].toDouble());
+
+      ui->comboBox_6->setCurrentText(s[14]);
+
+      ui->doubleSpinBox_17->setValue(s[15].toDouble());
+
+      ui->doubleSpinBox_20->setValue(s[16].toDouble());
+
+      ui->doubleSpinBox_22->setValue(s[17].toDouble());
+
+      ui->doubleSpinBox_23->setValue(s[18].toDouble());
+
+      ui->doubleSpinBox_24->setValue(s[19].toDouble());
+
+//Input1
+      if(s[20]=="On")
+      {
+          inmode1=1;
+          on_out2mode_2_clicked();
+      }
+      ui->comboBox_7->currentIndexChanged(s[21]);
+
+      ui->comboBox_8->currentIndexChanged(s[22]);
+
+//Input2
+      if(s[23]=="On")
+      {
+          inmode2=1;
+          on_out2mode_6_clicked();
+      }
+      ui->comboBox_15->currentIndexChanged(s[24]);
+
+      ui->comboBox_16->currentIndexChanged(s[25]);
+//Input3
+      if(s[26]=="On")
+      {
+          inmode3=1;
+          on_out2mode_10_clicked();
+      }
+      ui->comboBox_23->currentIndexChanged(s[27]);
+
+      ui->comboBox_24->currentIndexChanged(s[28]);
+//Input4
+      if(s[29]=="On")
+      {
+          inmode4=1;
+          on_out2mode_9_clicked();
+      }
+      ui->comboBox_21->currentIndexChanged(s[30]);
+
+      ui->comboBox_22->currentIndexChanged(s[31]);
 
     QMessageBox::StandardButton reply;
 
