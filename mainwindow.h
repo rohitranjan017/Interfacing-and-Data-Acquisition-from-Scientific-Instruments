@@ -77,15 +77,14 @@ private slots:
 
     void on_comboBox_21_currentIndexChanged(const QString &arg1);
 
-    void on_comboBox_8_currentIndexChanged(const QString &arg1);
 
-    void on_comboBox_24_currentIndexChanged(const QString &arg1);
+    void on_comboBox_8_activated(const QString &arg1);
 
-    void on_comboBox_16_currentIndexChanged(const QString &arg1);
+    void on_comboBox_24_activated(const QString &arg1);
 
-    void on_comboBox_22_currentIndexChanged(const QString &arg1);
+    void on_comboBox_16_activated(const QString &arg1);
 
-
+    void on_comboBox_22_activated(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;
