@@ -152,9 +152,10 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_connect_clicked()
 {
-    con();
+   con();
    //Output1
-       outs("Out1.PID.mode?");
+
+       outs("Out1.selected?");
        outs("Out1.Range?");
        outs("Out1.LowLmt?");
        outs("Out1.HiLmt?");
@@ -165,7 +166,7 @@ void MainWindow::on_connect_clicked()
        outs("Out1.PID.I?");
        outs("Out1.PID.D?");
    //Output2
-       outs("Out2.PID.mode?");
+       outs("Out2.selected?");
        outs("Out2.Range?");
        outs("Out2.LowLmt?");
        outs("Out2.HiLmt?");
@@ -191,6 +192,8 @@ void MainWindow::on_connect_clicked()
        outs("In4.selected?");
        outs("In4.Sensor?");
        outs("In4.Range?");
+   //OutputEnable
+       outs("OutputEnabled?");
 
        ui->connect->setStyleSheet("background-color:green");
 
@@ -198,11 +201,13 @@ void MainWindow::on_connect_clicked()
 
        clo();
 
-       QFile file("/home/build-CTC100-Desktop_Qt_5_7_1_GCC_64bit-Debug/o.txt");
+       QFile file("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/o.txt");
+
 
      QString s[40];
      int j=0;
        file.open(QIODevice::ReadOnly);
+
 
          while (!file.atEnd())
          {
@@ -215,11 +220,11 @@ void MainWindow::on_connect_clicked()
 
                       for(uint i=0;i<qstrlen(a)-3;i++)
                        temp=temp+a[i];
-                     // qDebug()<<temp;
+                      //qDebug()<<temp;
 
-                      if(temp=="Error: \"Ã»Ã»\" is not a valid instruction")
+                      if(temp=="On" or temp=="Off")
                       {
-                          int k=0;
+                          int k=0; s[0]=temp; j++;
 
                          while(k<32)
                          {
@@ -234,7 +239,7 @@ void MainWindow::on_connect_clicked()
 
                                j++;
 
-                               qDebug()<<s[j-1];
+                              // qDebug()<<s[j-1];
 
 
                              k++;
@@ -252,12 +257,21 @@ void MainWindow::on_connect_clicked()
 
              on_out1mode_clicked();
          }
+         else
+         {
+              mode1=0;
+
+              on_out1mode_clicked();
+         }
 
          ui->comboBox->setCurrentText(s[1]);
 
          ui->doubleSpinBox->setValue(s[2].toDouble());
 
          ui->doubleSpinBox_2->setValue(s[3].toDouble());
+
+         if(s[4]=="unselected")
+             s[4]="Select";
 
          ui->comboBox_2->setCurrentText(s[4]);
 
@@ -279,12 +293,21 @@ void MainWindow::on_connect_clicked()
 
              on_out2mode_clicked();
          }
+         else
+         {
+             mode2=0;
+
+             on_out2mode_clicked();
+         }
 
          ui->comboBox_5->setCurrentText(s[11]);
 
          ui->doubleSpinBox_14->setValue(s[12].toDouble());
 
          ui->doubleSpinBox_15->setValue(s[13].toDouble());
+
+         if(s[14]=="unselected")
+             s[14]="Select";
 
          ui->comboBox_6->setCurrentText(s[14]);
 
@@ -304,9 +327,29 @@ void MainWindow::on_connect_clicked()
              inmode1=1;
              on_out2mode_2_clicked();
          }
+         else
+         {
+             inmode1=0;
+             on_out2mode_2_clicked();
+         }
          ui->comboBox_7->setCurrentText(s[21]);
 
+         if(s[22]!="Auto" and s[22]!="2.5V")
+         {
+             int x=s[22].size();
+
+             QString temp;
+
+             for(int i=x-3;i>=0;i--)
+                 temp=s[22][i]+temp;
+
+             temp+="ê";
+
+             s[22]=temp;
+         }
+
          ui->comboBox_8->setCurrentText(s[22]);
+        // qDebug()<<s[22];
 
    //Input2
          if(s[23]=="On")
@@ -314,7 +357,26 @@ void MainWindow::on_connect_clicked()
              inmode2=1;
              on_out2mode_6_clicked();
          }
+         else
+         {
+             inmode2=0;
+             on_out2mode_6_clicked();
+         }
          ui->comboBox_15->setCurrentText(s[24]);
+
+         if(s[25]!="Auto" and s[25]!="2.5V")
+         {
+             int x=s[25].size();
+
+             QString temp;
+
+             for(int i=x-3;i>=0;i--)
+                 temp=s[16][i]+temp;
+
+             temp+="ê";
+
+             s[25]=temp;
+         }
 
          ui->comboBox_16->setCurrentText(s[25]);
    //Input3
@@ -323,7 +385,26 @@ void MainWindow::on_connect_clicked()
              inmode3=1;
              on_out2mode_10_clicked();
          }
+         else
+         {
+             inmode3=0;
+             on_out2mode_10_clicked();
+         }
          ui->comboBox_23->setCurrentText(s[27]);
+
+         if(s[28]!="Auto" and s[28]!="2.5V")
+         {
+             int x=s[28].size();
+
+             QString temp;
+
+             for(int i=x-3;i>=0;i--)
+                 temp=s[28][i]+temp;
+
+             temp+="ê";
+
+             s[28]=temp;
+         }
 
          ui->comboBox_24->setCurrentText(s[28]);
    //Input4
@@ -332,9 +413,31 @@ void MainWindow::on_connect_clicked()
              inmode4=1;
              on_out2mode_9_clicked();
          }
+         else
+         {
+             inmode4=0;
+             on_out2mode_9_clicked();
+         }
          ui->comboBox_21->setCurrentText(s[30]);
 
+         if(s[31]!="Auto" and s[31]!="2.5V")
+         {
+             int x=s[31].size();
+
+             QString temp;
+
+             for(int i=x-3;i>=0;i--)
+                 temp=s[31][i]+temp;
+
+             temp+="ê";
+
+             s[31]=temp;
+         }
+
          ui->comboBox_22->setCurrentText(s[31]);
+         z=1;
+
+         on_pushButton_2_clicked();
 
     QMessageBox::StandardButton reply;
 
@@ -369,7 +472,7 @@ void MainWindow::on_out1mode_clicked()
         ui->out1mode->setIconSize(QSize(61,31));
 
        con();
-       outs("Out1.PID.mode = on");
+       outs("Out1.selected = off");
        clo();
     }
     else
@@ -380,7 +483,7 @@ void MainWindow::on_out1mode_clicked()
         ui->out1mode->setIconSize(QSize(61,31));
 
         con();
-        outs("Out1.PID.mode = off");
+        outs("Out1.selected = on");
         clo();
     }
 
@@ -423,6 +526,7 @@ void MainWindow::on_doubleSpinBox_2_valueChanged(const QString &arg1)
 void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
 {
     con();
+
 
     QString s="\\";
     s+= "\"" + arg1+"\\"+"\"";
@@ -482,24 +586,24 @@ void MainWindow::on_out2mode_clicked()
 {
     if(mode2==0)
     {
-        QPixmap pixmap(":/on.jpg");
-        QIcon ButtonIcon(pixmap);
-        ui->out2mode->setIcon(ButtonIcon);
-        ui->out2mode->setIconSize(QSize(61,31));
-
-       con();
-       outs("Out2.PID.mode = on");
-       clo();
-    }
-    else
-    {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode->setIcon(ButtonIcon);
         ui->out2mode->setIconSize(QSize(61,31));
 
+       con();
+       outs("Out2.selected = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode->setIcon(ButtonIcon);
+        ui->out2mode->setIconSize(QSize(61,31));
+
         con();
-        outs("Out2.PID.mode = off");
+        outs("Out2.selected = on");
         clo();
     }
 
@@ -600,24 +704,24 @@ void MainWindow::on_out2mode_2_clicked()
 {
     if(inmode1==0)
     {
-        QPixmap pixmap(":/on.jpg");
-        QIcon ButtonIcon(pixmap);
-        ui->out2mode_2->setIcon(ButtonIcon);
-        ui->out2mode_2->setIconSize(QSize(61,31));
-
-       con();
-       outs("In1.selected(on)");
-       clo();
-    }
-    else
-    {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_2->setIcon(ButtonIcon);
         ui->out2mode_2->setIconSize(QSize(61,31));
 
+       con();
+       outs("In1.selected = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_2->setIcon(ButtonIcon);
+        ui->out2mode_2->setIconSize(QSize(61,31));
+
         con();
-        outs("In1.selected = off");
+        outs("In1.selected = on");
         clo();
     }
 
@@ -628,24 +732,24 @@ void MainWindow::on_out2mode_6_clicked()
 {
     if(inmode2==0)
     {
-        QPixmap pixmap(":/on.jpg");
-        QIcon ButtonIcon(pixmap);
-        ui->out2mode_6->setIcon(ButtonIcon);
-        ui->out2mode_6->setIconSize(QSize(61,31));
-
-       con();
-       outs("In2.selected(on)");
-       clo();
-    }
-    else
-    {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_6->setIcon(ButtonIcon);
         ui->out2mode_6->setIconSize(QSize(61,31));
 
+       con();
+       outs("In2.selected = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_6->setIcon(ButtonIcon);
+        ui->out2mode_6->setIconSize(QSize(61,31));
+
         con();
-        outs("In2.selected = off");
+        outs("In2.selected = on");
         clo();
     }
 
@@ -656,24 +760,24 @@ void MainWindow::on_out2mode_10_clicked()
 {
     if(inmode3==0)
     {
-        QPixmap pixmap(":/on.jpg");
-        QIcon ButtonIcon(pixmap);
-        ui->out2mode_10->setIcon(ButtonIcon);
-        ui->out2mode_10->setIconSize(QSize(61,31));
-
-       con();
-       outs("In3.selected(on)");
-       clo();
-    }
-    else
-    {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_10->setIcon(ButtonIcon);
         ui->out2mode_10->setIconSize(QSize(61,31));
 
+       con();
+       outs("In3.selected = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_10->setIcon(ButtonIcon);
+        ui->out2mode_10->setIconSize(QSize(61,31));
+
         con();
-        outs("In3.selected = off");
+        outs("In3.selected = on");
         clo();
     }
 
@@ -684,24 +788,24 @@ void MainWindow::on_out2mode_9_clicked()
 {
     if(inmode4==0)
     {
-        QPixmap pixmap(":/on.jpg");
-        QIcon ButtonIcon(pixmap);
-        ui->out2mode_9->setIcon(ButtonIcon);
-        ui->out2mode_9->setIconSize(QSize(61,31));
-
-       con();
-       outs("In4.selected(on)");
-       clo();
-    }
-    else
-    {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_9->setIcon(ButtonIcon);
         ui->out2mode_9->setIconSize(QSize(61,31));
 
+       con();
+       outs("In4.selected = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_9->setIcon(ButtonIcon);
+        ui->out2mode_9->setIconSize(QSize(61,31));
+
         con();
-        outs("In4.selected = off");
+        outs("In4.selected = on");
         clo();
     }
 
@@ -836,8 +940,26 @@ void MainWindow::on_comboBox_8_activated(const QString &arg1)
 {
     con();
 
-    outs("In1.Range = "+arg1);
+    QString temp="Auto";
 
+    outs("In1.Range = "+temp);
+
+    if(arg1!="Auto")
+    {
+        int i;
+
+        for( i=0;i<11;i++)
+        if(v[i]==arg1)
+            break;
+        i++;
+
+        char c='0'+i;
+
+        QString h;h+=c;
+
+    outs("In1.Range += "+h);
+    //qDebug()<<c;
+    }
     clo();
 }
 
@@ -845,7 +967,26 @@ void MainWindow::on_comboBox_24_activated(const QString &arg1)
 {
     con();
 
-    outs("In2.Range = "+arg1);
+    QString temp="Auto";
+
+    outs("In2.Range = "+temp);
+
+    if(arg1!="Auto")
+    {
+        int i;
+
+        for( i=0;i<11;i++)
+        if(v[i]==arg1)
+            break;
+
+        i++;
+
+        char c='0'+i;
+
+        QString h;h+=c;
+
+    outs("In2.Range += "+h);
+    }
 
     clo();
 }
@@ -854,7 +995,26 @@ void MainWindow::on_comboBox_16_activated(const QString &arg1)
 {
     con();
 
-    outs("In3.Range = "+arg1);
+    QString temp="Auto";
+
+    outs("In3.Range = "+temp);
+
+    if(arg1!="Auto")
+    {
+        int i;
+
+        for( i=0;i<11;i++)
+        if(v[i]==arg1)
+            break;
+
+        i++;
+
+        char c='0'+i;
+
+        QString h;h+=c;
+
+    outs("In3.Range += "+h);
+    }
 
     clo();
 }
@@ -862,8 +1022,25 @@ void MainWindow::on_comboBox_16_activated(const QString &arg1)
 void MainWindow::on_comboBox_22_activated(const QString &arg1)
 {
     con();
+QString temp="Auto";
 
-    outs("In4.Range = "+arg1);
+    outs("In4.Range = "+temp);
+
+    if(arg1!="Auto")
+    {
+        int i;
+
+        for( i=0;i<11;i++)
+        if(v[i]==arg1)
+            break;
+        i++;
+
+        char c='0'+i;
+
+        QString h;h+=c;
+
+    outs("In4.Range += "+h);
+    }
 
     clo();
 }
