@@ -8,6 +8,8 @@ char c1='R',c2='R',c3='R',c4='R';
 bool z;
 bool mode1;
 bool mode2;
+bool mode3;
+bool mode4;
 bool inmode1,inmode2,inmode3,inmode4;
 QString v[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê",
                 "300kê","Auto" };
@@ -194,6 +196,9 @@ void MainWindow::on_connect_clicked()
        outs("In4.Range?");
    //OutputEnable
        outs("OutputEnabled?");
+   //Output Pid mode
+       outs("Out1.PID.Mode?");
+       outs("Out2.PID.Mode?");
 
        ui->connect->setStyleSheet("background-color:green");
 
@@ -226,7 +231,7 @@ void MainWindow::on_connect_clicked()
                       {
                           int k=0; s[0]=temp; j++;
 
-                         while(k<32)
+                         while(k<35)
                          {
                                 file.readLine(a,sizeof(a));
 
@@ -264,6 +269,18 @@ void MainWindow::on_connect_clicked()
               on_out1mode_clicked();
          }
 
+         if(s[33]=="On")
+         {
+             mode3=1;
+
+             on_out2mode_5_clicked();
+         }
+         else
+         {
+              mode3=0;
+
+              on_out2mode_5_clicked();
+         }
          ui->comboBox->setCurrentText(s[1]);
 
          ui->doubleSpinBox->setValue(s[2].toDouble());
@@ -285,6 +302,8 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_13->setValue(s[9].toDouble());
 
+
+
    //Output2
 
          if(s[10]=="On")
@@ -299,7 +318,18 @@ void MainWindow::on_connect_clicked()
 
              on_out2mode_clicked();
          }
+         if(s[34]=="On")
+         {
+             mode4=1;
 
+             on_out2mode_4_clicked();
+         }
+         else
+         {
+              mode4=0;
+
+              on_out2mode_4_clicked();
+         }
          ui->comboBox_5->setCurrentText(s[11]);
 
          ui->doubleSpinBox_14->setValue(s[12].toDouble());
@@ -456,10 +486,6 @@ void MainWindow::on_connect_clicked()
 
 
      }
-
-
-
-
 }
 
 void MainWindow::on_out1mode_clicked()
@@ -1043,4 +1069,60 @@ QString temp="Auto";
     }
 
     clo();
+}
+
+void MainWindow::on_out2mode_5_clicked()
+{
+    if(mode3==0)
+    {
+        QPixmap pixmap(":/on-off.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_5->setIcon(ButtonIcon);
+        ui->out2mode_5->setIconSize(QSize(61,31));
+
+       con();
+       outs("Out1.PID.Mode = off");
+       clo();
+    }
+    else
+    {
+        QPixmap pixmap(":/on.jpg");
+        QIcon ButtonIcon(pixmap);
+        ui->out2mode_5->setIcon(ButtonIcon);
+        ui->out2mode_5->setIconSize(QSize(61,31));
+
+        con();
+        outs("Out1.PID.Mode = on");
+        clo();
+    }
+
+    mode3=!mode3;
+}
+
+void MainWindow::on_out2mode_4_clicked()
+{
+    if(mode4==0)
+        {
+            QPixmap pixmap(":/on-off.jpg");
+            QIcon ButtonIcon(pixmap);
+            ui->out2mode_4->setIcon(ButtonIcon);
+            ui->out2mode_4->setIconSize(QSize(61,31));
+
+           con();
+           outs("Out1.PID.Mode = off");
+           clo();
+        }
+        else
+        {
+            QPixmap pixmap(":/on.jpg");
+            QIcon ButtonIcon(pixmap);
+            ui->out2mode_4->setIcon(ButtonIcon);
+            ui->out2mode_4->setIconSize(QSize(61,31));
+
+            con();
+            outs("Out1.PID.Mode = on");
+            clo();
+        }
+
+        mode4=!mode4;
 }

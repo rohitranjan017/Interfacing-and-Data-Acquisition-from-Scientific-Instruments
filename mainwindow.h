@@ -87,6 +87,10 @@ private slots:
     void on_comboBox_22_activated(const QString &arg1);
 
 
+    void on_out2mode_5_clicked();
+
+    void on_out2mode_4_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
