@@ -4,6 +4,19 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QTime>
+
+void delay( int millisecondsToWait )
+{
+    millisecondsToWait*=1000;
+
+    QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
+    while( QTime::currentTime() < dieTime )
+    {
+        QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
+    }
+}
+
 char c1='R',c2='R',c3='R',c4='R';
 bool z;
 bool mode1;
@@ -109,12 +122,307 @@ MainWindow::MainWindow(QWidget *parent) :
            ui->comboBox_24->addItem(v[i]);
            ui->comboBox_22->addItem(v[i]);
     }
+
+    timer=new QTimer();
+    connect(timer, SIGNAL(timeout()),this,SLOT(showtime()));
+
+
    
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::showtime()
+{
+    con();
+    outs("Out1.selected?");
+    outs("Out2.selected?");
+    outs("Out1.PID.Input?");
+    outs("Out2.PID.Input?");
+    outs("In1.value?");
+    outs("In2.value?");
+    outs("In3.value?");
+    outs("In4.value?");
+    clo();
+    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/o.txt");
+
+  QString s[40];
+  int j=0;
+    file.open(QIODevice::ReadOnly);
+
+
+      while (!file.atEnd())
+      {
+
+               char a[1025];
+
+                   file.readLine(a,sizeof(a));
+
+                   QString temp;
+
+                   for(uint i=0;i<qstrlen(a)-3;i++)
+                    temp=temp+a[i];
+                   //qDebug()<<temp;
+
+                   if(temp=="On" || temp=="Off")
+                   {
+                       int k=0; s[0]=temp; j++;
+
+                      while(k<8)
+                      {
+                             file.readLine(a,sizeof(a));
+                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              s[j]=s[j]+a[i];
+
+                            j++;
+
+                            //qDebug()<<s[j-1];
+
+
+                          k++;
+                      }
+
+                      break;
+                   }
+
+      }
+      if(s[0]=="On")        //Output1 on or off
+      {//qDebug()<<s[2];
+          double out1_setpoint=ui->doubleSpinBox_6->value();
+          double out1_tol=ui->doubleSpinBox_25->value();
+          double max=out1_setpoint+out1_tol;
+          double min=out1_setpoint-out1_tol;
+          double final=ui->doubleSpinBox_8->value();
+          double interval=ui->doubleSpinBox_7->value();
+          if(s[2]=="In 1")
+          {
+
+              ui->lcdNumber->display(s[4]);
+              double comp=s[4].toDouble();
+              if(comp>min && comp<max)
+              {
+                  ui->pushButton_3->setStyleSheet("background-color:green");
+
+                  //PAUSE CODE
+                  delay(ui->spinBox->value());
+
+                  if(final==out1_setpoint )
+                  {
+                      timer->stop();
+                      con();
+                      outs("OutputEnabled = Off");
+                      clo();
+                  }
+
+                  ui->pushButton_3->setStyleSheet("background-color:red");
+                  ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                  con();
+                  outs("Out1.PID.Mode = On");
+                  clo();
+
+              }
+
+          }
+          else if(s[2]=="In 2")
+          {
+               ui->lcdNumber_2->display(s[5]);
+               double comp=s[5].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                  delay(ui->spinBox->value());
+
+                   if(final==out1_setpoint )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_3->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+
+                   con();
+                   outs("Out1.PID.Mode = On");
+                   clo();
+               }
+
+          }
+          else if(s[2]=="In 3")
+          {
+               ui->lcdNumber_3->display(s[6]);  //qDebug()<<s[6]<<endl;
+               double comp=s[6].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                  delay(ui->spinBox->value());
+
+                   if(final==out1_setpoint )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_3->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+
+                   con();
+                   outs("Out1.PID.Mode = On");
+                   clo();
+               }
+
+          }
+          else if(s[2]=="In 4")
+          {
+               ui->lcdNumber_4->display(s[7]);
+               double comp=s[7].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                   delay(ui->spinBox->value());
+
+                   if(final==out1_setpoint )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_3->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+
+                   con();
+                   outs("Out1.PID.Mode = On");
+                   clo();
+               }
+
+          }
+      }
+      if(s[1]=="On")        //Output2 on or off
+      {
+          double out2_setpoint=ui->doubleSpinBox_17->value();
+          double out2_tol=ui->doubleSpinBox_38->value();
+          double max=out2_setpoint+out2_tol;
+          double min=out2_setpoint-out2_tol;
+          double final=ui->doubleSpinBox_19->value();
+          double interval=ui->doubleSpinBox_18->value();
+          if(s[3]=="In 1")
+          {
+
+              ui->lcdNumber->display(s[4]);
+              double comp=s[4].toDouble();
+              if(comp>min && comp<max)
+              {
+                  ui->pushButton_5->setStyleSheet("background-color:green");
+            //PAUSE CODE
+                  delay(ui->spinBox_2->value());
+                  if(final==out2_setpoint )
+                  {
+                      timer->stop();
+                      con();
+                      outs("OutputEnabled = Off");
+                      clo();
+                  }
+
+                  ui->pushButton_5->setStyleSheet("background-color:red");
+                  ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+
+                  con();
+                  outs("Out2.PID.Mode = On");
+                  clo();
+              }
+
+          }
+          else if(s[2]=="In 2")
+          {
+               ui->lcdNumber_2->display(s[5]);
+               double comp=s[5].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_5->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                   delay(final==out2_setpoint);
+                   if(comp > final-out2_tol && comp<final+out2_tol )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_5->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                   con();
+                   outs("Out2.PID.Mode = On");
+                   clo();
+
+               }
+
+          }
+          else if(s[2]=="In 3")
+          {
+               ui->lcdNumber_3->display(s[6]); //qDebug()<<s[6]<<endl;
+               double comp=s[6].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_5->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                   delay(ui->spinBox_2->value());
+                   if(final==out2_setpoint )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_5->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+
+                   con();
+                   outs("Out2.PID.Mode = On");
+                   clo();
+               }
+
+          }
+          else if(s[2]=="In 4")
+          {
+               ui->lcdNumber_4->display(s[7]);
+               double comp=s[7].toDouble();
+               if(comp>min && comp<max)
+               {
+                   ui->pushButton_5->setStyleSheet("background-color:green");
+             //PAUSE CODE
+                   delay(ui->spinBox_2->value());
+                   if(final==out2_setpoint )
+                   {
+                       timer->stop();
+                       con();
+                       outs("OutputEnabled = Off");
+                       clo();
+                   }
+
+                   ui->pushButton_5->setStyleSheet("background-color:red");
+                   ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+
+                   con();
+                   outs("Out2.PID.Mode = On");
+                   clo();
+               }
+
+          }
+      }
+
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -133,6 +441,12 @@ void MainWindow::on_pushButton_2_clicked()
 
         QMessageBox::information(this,"OUTPUT","Ouput Enabled");
 
+        ui->pushButton_3->setStyleSheet("background-color:red");
+        ui->pushButton_5->setStyleSheet("background-color:red");
+
+        timer->start(5000);
+
+
     }
     else
     {
@@ -142,18 +456,38 @@ void MainWindow::on_pushButton_2_clicked()
 
            outs("outputEnable = off");
 
+            clo();
 
-
-           clo();
+            timer->stop();
 
             QMessageBox::information(this,"OUTPUT","Ouput Disabled");
     }
 
     z=!z;
+
+
 }
 
 void MainWindow::on_connect_clicked()
 {
+    con();
+    outs("Connected!!!");
+    clo();
+
+
+    QMessageBox::StandardButton reply;
+
+     reply = QMessageBox::information(this, "Status", "CONNECTED!!!",QMessageBox::Ok);
+
+     if (reply == QMessageBox::Ok)
+     {
+         con();
+         outs("popup.close");
+         clo();
+     }
+
+
+
    con();
    //Output1
 
@@ -199,10 +533,6 @@ void MainWindow::on_connect_clicked()
    //Output Pid mode
        outs("Out1.PID.Mode?");
        outs("Out2.PID.Mode?");
-
-       ui->connect->setStyleSheet("background-color:green");
-
-       outs("popup CONNECTED!!!");
 
        clo();
 
@@ -469,23 +799,6 @@ void MainWindow::on_connect_clicked()
 
          on_pushButton_2_clicked();
 
-    QMessageBox::StandardButton reply;
-
-     reply = QMessageBox::information(this, "Status", "CONNECTED!!!",
-                                   QMessageBox::Ok);
-     if (reply == QMessageBox::Ok) {
-
-
-
-
-         con();
-
-         outs("popup.close");
-
-         clo();
-
-
-     }
 }
 
 void MainWindow::on_out1mode_clicked()

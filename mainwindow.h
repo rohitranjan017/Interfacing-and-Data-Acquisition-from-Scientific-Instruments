@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include<QTimer>
 #include <QMainWindow>
 
 namespace Ui {
@@ -14,6 +14,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+public slots:
+    void showtime();
 
 private slots:
     void on_pushButton_2_clicked();
@@ -93,6 +95,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QTimer *timer;
 };
 
 #endif // MAINWINDOW_H
