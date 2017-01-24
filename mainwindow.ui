@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="resource.qrc">
+     <iconset>
       <normaloff>:/button_ctc100.png</normaloff>:/button_ctc100.png</iconset>
     </property>
     <property name="iconSize">
@@ -41,7 +41,7 @@
     <property name="geometry">
      <rect>
       <x>1140</x>
-      <y>90</y>
+      <y>150</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -62,8 +62,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>1200</x>
-      <y>100</y>
+      <x>1190</x>
+      <y>160</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -506,7 +506,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -583,7 +583,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1014,7 +1014,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1076,7 +1076,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="resource.qrc">
+       <iconset>
         <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
       </property>
       <property name="iconSize">
@@ -1497,7 +1497,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="resource.qrc">
+       <iconset>
         <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
       </property>
       <property name="iconSize">
@@ -1636,7 +1636,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1760,7 +1760,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1935,7 +1935,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2110,7 +2110,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2285,7 +2285,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="resource.qrc">
+      <iconset>
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2357,6 +2357,24 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>50</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>6500B</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2379,8 +2397,6 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

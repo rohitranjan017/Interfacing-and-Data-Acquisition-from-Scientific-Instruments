@@ -13,11 +13,25 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    wk.cpp \
+    measureset.cpp \
+    traceset.cpp \
+    wkmeter.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    wk.h \
+    measureset.h \
+    traceset.h \
+    wkmeter.h \
+    allfun.h \
+    allfun3.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    wk.ui \
+    measureset.ui \
+    traceset.ui \
+    wkmeter.ui
 
 DISTFILES += \
     button_ctc100.png

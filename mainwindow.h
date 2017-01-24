@@ -93,6 +93,8 @@ private slots:
 
     void on_out2mode_4_clicked();
 
+    void on_pushButton_6_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *timer;

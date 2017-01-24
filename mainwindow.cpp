@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QTime>
+#include <wk.h>
 
 void delay( int millisecondsToWait )
 {
@@ -1438,4 +1439,11 @@ void MainWindow::on_out2mode_4_clicked()
         }
 
         mode4=!mode4;
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    wk *ptr;
+    ptr = new wk(this);
+    ptr->show();
 }
