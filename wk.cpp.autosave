@@ -52,7 +52,7 @@ void readfile()
 
 void writelog()
 {
-    /*sta();
+    sta();
     read("ANA:POINTS?");
     sto();
 
@@ -94,41 +94,6 @@ void writelog()
         out2<<my[0]<<"        "<<my[2]<<endl;
 
     }
-    delay(ui->spinBox_3->value());*/
-
-    for(int i=0;i<1;i++)
-    {int temp=250;
-        /*sta();
-        write("ANA:PROP1 "+props[i]);
-        write("ANA:FIT 3");
-        sto();*/
-
-        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/Graphs/"+props[i]+"~Freq"+".txt");
-        file1.open(QFile::ReadWrite);
-
-        QTextStream out(&file1);
-
-        out<<temp<<"             ";
-
-        /*sta();
-
-        for(int i=0;i<=tot;i++)
-        {
-           read("ANA:POINT? "+QString::number(i));
-        }
-
-        sto();*/
-
-        readfile();
-
-        for(int i=0;i<10;i++)
-        {
-            QStringList my = vec[i].split(',');
-            out<<my[1]<<"       ";
-        }
-
-
-    }
 }
 
 void delay1( int millisecondsToWait )
@@ -151,11 +116,11 @@ wk::wk(QWidget *parent) :
 
     this->setWindowTitle("Analysis Mode");
 
-    /*sta();
+    sta();
     read("ANA:BIAS-STAT?");
     sto();
 
-    readfile();*/
+    readfile();
 
     /*if(vec[0]=="0")
     {
@@ -183,7 +148,7 @@ wk::~wk()
 
 void wk::on_pushButton_2_clicked()
 {
-    wkmeter* ptr=new wkmeter;
+    wkmeter* ptr=new wkme;
     ptr->show();
     hide();
 }
@@ -233,7 +198,7 @@ void wk::on_pushButton_clicked()
 
 void wk::on_trig_clicked()
 {
-   /* sta();
+    sta();
     write("ANA:TRIG");
     sto();
 
@@ -249,7 +214,7 @@ void wk::on_trig_clicked()
 
         writelog();
 
-    }*/
-    writelog();
+    }
+   // writelog();
 
 }

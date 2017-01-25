@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +25,10 @@ HEADERS  += mainwindow.h \
     traceset.h \
     wkmeter.h \
     allfun.h \
-    allfun3.h
+    allfun3.h \
+    allfun4.h \
+    allfun5.h \
+    allfun6.h
 
 FORMS    += mainwindow.ui \
     wk.ui \

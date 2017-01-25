@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset>
+     <iconset resource="resource.qrc">
       <normaloff>:/button_ctc100.png</normaloff>:/button_ctc100.png</iconset>
     </property>
     <property name="iconSize">
@@ -102,7 +102,7 @@
       <x>50</x>
       <y>130</y>
       <width>301</width>
-      <height>491</height>
+      <height>521</height>
      </rect>
     </property>
     <property name="title">
@@ -506,7 +506,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -583,7 +583,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -603,6 +603,34 @@
       </rect>
      </property>
     </widget>
+    <widget class="QSpinBox" name="spinBox_3">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>470</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_38">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>470</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wait for Data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
@@ -610,7 +638,7 @@
       <x>380</x>
       <y>130</y>
       <width>301</width>
-      <height>491</height>
+      <height>521</height>
      </rect>
     </property>
     <property name="title">
@@ -1014,7 +1042,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1076,7 +1104,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="resource.qrc">
         <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
       </property>
       <property name="iconSize">
@@ -1497,7 +1525,7 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="resource.qrc">
         <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
       </property>
       <property name="iconSize">
@@ -1636,7 +1664,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1651,6 +1679,34 @@
       <rect>
        <x>150</x>
        <y>370</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_67">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>470</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wait for Data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_4">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>470</y>
        <width>61</width>
        <height>23</height>
       </rect>
@@ -1760,7 +1816,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -1935,7 +1991,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2110,7 +2166,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2285,7 +2341,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="resource.qrc">
        <normaloff>:/on-off.jpg</normaloff>:/on-off.jpg</iconset>
      </property>
      <property name="iconSize">
@@ -2397,6 +2453,8 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -7,8 +7,9 @@ measureset::measureset(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::measureset)
 {
-    qDebug()<<"%%%%";
+   // qDebug()<<"%%%%";
     ui->setupUi(this);
+
 
     sta();
 
@@ -29,7 +30,7 @@ measureset::measureset(QWidget *parent) :
     QVector< QString > v;
 
     file.open(QIODevice::ReadOnly);
-    //qDebug()<<"%%%%";
+
     while(!file.atEnd())
     {
         char a[1025];

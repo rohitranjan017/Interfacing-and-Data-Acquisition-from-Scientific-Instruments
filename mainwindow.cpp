@@ -5,8 +5,16 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QTime>
-#include <wk.h>
-
+#include "wk.h"
+#include "allfun6.h"
+#include <QPixmap>
+#define sta sta6
+#define sto sto6
+#define read read6
+#define write write6
+#define props prop
+#define vec vect
+#define readfile readfiles
 void delay( int millisecondsToWait )
 {
     millisecondsToWait*=1000;
@@ -17,7 +25,8 @@ void delay( int millisecondsToWait )
         QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
     }
 }
-
+QVector< QString > vect;
+int tot;
 char c1='R',c2='R',c3='R',c4='R';
 bool z;
 bool mode1;
@@ -27,6 +36,7 @@ bool mode4;
 bool inmode1,inmode2,inmode3,inmode4;
 QString v[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê",
                 "300kê","Auto" };
+QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 QFile file("script.sh");
 QTextStream out(&file);
 void con()
@@ -110,6 +120,38 @@ void outs(QString s)
     post();
 }
 
+void readfiles()
+{
+    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/o.txt");
+
+    vec.clear();
+
+    file.open(QIODevice::ReadOnly);
+
+    while(!file.atEnd())
+    {
+        char a[1025];
+
+            file.readLine(a,sizeof(a));
+
+            if(a[0]=='r' and a[1]=='e')
+            {
+                QString temp;
+
+                int x=strlen(a);
+
+                for(int i=18;i<x-2;i++)
+                {
+                    temp=temp+a[i];
+
+                }
+
+                vec.push_back(temp);
+                //qDebug()<<temp;
+            }
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -130,7 +172,50 @@ MainWindow::MainWindow(QWidget *parent) :
 
    
 }
+void MainWindow::conduct(int temp)
+{
 
+    sta();
+    write("ANA:TRIG");
+    sto();
+
+    delay(ui->spinBox_3->value());
+
+    for(int i=0;i<11;i++)
+    {
+        sta();
+        write("ANA:PROP1 "+props[i]);
+        write("ANA:FIT 3");
+        sto();
+
+        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/Graphs/"+props[i]+"~Freq"+".txt");
+        file1.open(QFile::ReadWrite);
+
+        QTextStream out(&file1);
+
+        out<<temp<<"             ";
+
+        sta();
+
+        for(int i=0;i<=tot;i++)
+        {
+           read("ANA:POINT? "+QString::number(i));
+        }
+
+        sto();
+
+        readfile();
+
+        for(int i=0;i<=tot;i++)
+        {
+            QStringList my = vec[i].split(',');
+            out<<my[1]<<"       ";
+        }
+
+
+    }
+
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -138,6 +223,44 @@ MainWindow::~MainWindow()
 
 void MainWindow::showtime()
 {
+
+
+    sta();
+    read("ANA:POINTS?");
+    sto();
+
+    readfile();
+
+    tot=v[0].toInt();
+
+
+    for(int i=0;i<=tot;i++)
+    {
+        sta();
+        read("ANA:MKR:POSITION?");
+        write("ANA:MKR:RIGHT");
+        sto();
+    }
+
+    readfile();
+
+    for(int i=0;i<11;i++)
+    {
+        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/Graphs/"+props[i]+"~Freq"+".txt");
+        file1.open(QFile::ReadWrite);
+
+        QTextStream out(&file1);
+
+        out<<"Temperature"<<"       ";
+
+        for(int j=0;j<=tot;j++)
+        out<<v[j]<<"       ";
+
+    }
+
+
+
+
     con();
     outs("Out1.selected?");
     outs("Out2.selected?");
@@ -210,6 +333,8 @@ void MainWindow::showtime()
                   //PAUSE CODE
                   delay(ui->spinBox->value());
 
+                  conduct(out1_setpoint);
+
                   if(final==out1_setpoint )
                   {
                       timer->stop();
@@ -236,6 +361,8 @@ void MainWindow::showtime()
                    ui->pushButton_3->setStyleSheet("background-color:green");
              //PAUSE CODE
                   delay(ui->spinBox->value());
+
+                 conduct(out1_setpoint);
 
                    if(final==out1_setpoint )
                    {
@@ -264,6 +391,8 @@ void MainWindow::showtime()
              //PAUSE CODE
                   delay(ui->spinBox->value());
 
+                  conduct(out1_setpoint);
+
                    if(final==out1_setpoint )
                    {
                        timer->stop();
@@ -290,6 +419,8 @@ void MainWindow::showtime()
                    ui->pushButton_3->setStyleSheet("background-color:green");
              //PAUSE CODE
                    delay(ui->spinBox->value());
+
+                   conduct(out1_setpoint);
 
                    if(final==out1_setpoint )
                    {
@@ -327,6 +458,9 @@ void MainWindow::showtime()
                   ui->pushButton_5->setStyleSheet("background-color:green");
             //PAUSE CODE
                   delay(ui->spinBox_2->value());
+
+                  conduct(out2_setpoint);
+
                   if(final==out2_setpoint )
                   {
                       timer->stop();
@@ -353,6 +487,9 @@ void MainWindow::showtime()
                    ui->pushButton_5->setStyleSheet("background-color:green");
              //PAUSE CODE
                    delay(final==out2_setpoint);
+
+                   conduct(out2_setpoint);
+
                    if(comp > final-out2_tol && comp<final+out2_tol )
                    {
                        timer->stop();
@@ -379,6 +516,9 @@ void MainWindow::showtime()
                    ui->pushButton_5->setStyleSheet("background-color:green");
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
+
+                   conduct(out2_setpoint);
+
                    if(final==out2_setpoint )
                    {
                        timer->stop();
@@ -405,6 +545,9 @@ void MainWindow::showtime()
                    ui->pushButton_5->setStyleSheet("background-color:green");
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
+
+                   conduct(out2_setpoint);
+
                    if(final==out2_setpoint )
                    {
                        timer->stop();
@@ -1443,7 +1586,7 @@ void MainWindow::on_out2mode_4_clicked()
 
 void MainWindow::on_pushButton_6_clicked()
 {
-    wk *ptr;
-    ptr = new wk(this);
+    //ptr = new wk(this);
     ptr->show();
+
 }
