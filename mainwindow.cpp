@@ -8,6 +8,7 @@
 #include "wk.h"
 #include "allfun6.h"
 #include <QPixmap>
+#include <QSplineSeries>
 #define sta sta6
 #define sto sto6
 #define read read6
@@ -168,8 +169,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer=new QTimer();
     connect(timer, SIGNAL(timeout()),this,SLOT(showtime()));
+    ptr->show();
 
-
+   //QLineSeries *serie = new QLineSeries();
+    //serie->attachAxis(ptr->axisX[0]);
+   // ptr->axisX[0]->setTickCount(6);
+   // ptr->axisX[0]->setLabelFormat("%d");
+    //ptr->axisX[0]->setLabelsPosition(true);
+    //QLineSeries *serie;
+    //serie = ptr->series[0];
+  // *(ptr->series[0])<<QPointF(50,50)<<QPointF(100,75)<<QPointF(200,20)<<QPointF(300,75);
+    ptr->series[0]->append(40,20);
+    ptr->series[0]->append(60,30);
+    //ptr->series[0]=serie;
+   // ptr->chart[0]->addSeries(ptr->series[0]);
+   //ptr->series[0]->attachAxis(ptr->axisY[0]);
+    //eries[0].
    
 }
 void MainWindow::conduct(int temp)
@@ -188,7 +203,7 @@ void MainWindow::conduct(int temp)
         write("ANA:FIT 3");
         sto();
 
-        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/Graphs/"+props[i]+"~Freq"+".txt");
+        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/Graphs/"+props[i]+"~T"+".txt");
         file1.open(QFile::ReadWrite);
 
         QTextStream out(&file1);
@@ -197,7 +212,7 @@ void MainWindow::conduct(int temp)
 
         sta();
 
-        for(int i=0;i<=tot;i++)
+        for(int j=0;j<=tot;j++)
         {
            read("ANA:POINT? "+QString::number(i));
         }
@@ -206,10 +221,13 @@ void MainWindow::conduct(int temp)
 
         readfile();
 
-        for(int i=0;i<=tot;i++)
+        for(int j=0;j<=tot;j++)
         {
-            QStringList my = vec[i].split(',');
+            QStringList my = vec[j].split(',');
             out<<my[1]<<"       ";
+            QString cur=my[1];
+            //if(j==0)
+                //ptr->series[i]<<QPointF(temp,cur.toDouble());
         }
 
 

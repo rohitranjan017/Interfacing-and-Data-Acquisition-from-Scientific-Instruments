@@ -173,6 +173,97 @@ wk::wk(QWidget *parent) :
         ui->pushButton->setIconSize(QSize(61,31));
         biasm=0;
     }*/
+
+
+    //Graphs...1
+
+
+    for(int i=0;i<11;i++)
+    {
+        axisX[i]=new QCategoryAxis();
+        //axisY[i]=new QCategoryAxis();
+        axisY[i]=new QLogValueAxis();
+        // d, i, o, x, X, f, F, e, E, g, G, c.
+        axisY[i]->setLabelFormat("%d");
+        axisY[i]->setBase(10);
+        axisY[i]->setLabelsVisible(true);
+        //axisY[i]->QObject
+        //axisY[i]->set
+    }
+
+
+    for(int i=0;i<11;i++){
+    series[i] = new QLineSeries();
+    chart[i] = new QChart();
+    chart[i]->addSeries(series[i]);
+     axisX[i]->setRange(0,500);
+     //axisX[i]->setLabelsPosition(QCategoryAxis::AxisLabelsPositionOnValue);
+     //axisY[i]->setLabelsPosition(QCategoryAxis::AxisLabelsPositionOnValue);
+     axisY[i]->setRange(1, 10000000);
+     chart[i]->setAxisX(axisX[i], series[i]);
+     //chart[i]->setAxisY(axisY[i], series[i]);
+     chart[i]->addAxis(axisY[i], Qt::AlignLeft);
+     series[i]->attachAxis(axisY[i]);
+
+    chartView[i] = new QChartView(chart[i]);
+    }
+
+     qreal num;
+   //QString s[22]={"1n","10n","100n","1u","10u","100u","1m","10m","100m","1","10","100","1k","10k","100k","1M","10M","100M","1G","10G","100G","1T"};
+    //int q=0;
+    /*for(double j=1.0e-9;j<=1.0e+11;j*=10,q++)
+    {
+        for(int i=0;i<11;i++)
+        {
+            num=j;
+            axisY[i]->append(s[q],num);
+        }
+    }*/
+        /*
+        //Graphs...2
+        series2 = new QLineSeries();
+        chart2 = new QChart();
+
+        chart2->addSeries(series1);
+        chart2->createDefaultAxes();
+        QCategoryAxis *axisX = new QCategoryAxis();
+        QCategoryAxis *axisY = new QCategoryAxis();
+
+           axisX->append("low", 10);
+            axisX->append("optimal", 20);
+            axisX->append("high", 30);
+            axisX->append("Very High",40);
+            axisX->setRange(0, 40);
+            axisX->setLabelsPosition(QCategoryAxis::AxisLabelsPositionOnValue);
+            axisY->setLabelsPosition(QCategoryAxis::AxisLabelsPositionOnValue);
+            axisY->append("slow", 10);
+            axisY->append("med", 20);
+            axisY->append("fast", 30);
+            axisY->setRange(0, 40);
+
+            chart1->setAxisX(axisX, series1);
+            chart1->setAxisY(axisY, series1);
+            chartView1 = new QChartView(chart1);
+
+            ui->gridLayout_4->addWidget(chartView1);
+            */
+            ui->gridLayout_4->addWidget(chartView[0]);
+            ui->gridLayout_5->addWidget(chartView[1]);
+            ui->gridLayout_6->addWidget(chartView[2]);
+            ui->gridLayout_7->addWidget(chartView[3]);
+            ui->gridLayout_8->addWidget(chartView[4]);
+            ui->gridLayout_9->addWidget(chartView[5]);
+            ui->gridLayout_10->addWidget(chartView[6]);
+            ui->gridLayout_11->addWidget(chartView[7]);
+            ui->gridLayout_12->addWidget(chartView[8]);
+            ui->gridLayout_13->addWidget(chartView[9]);
+            ui->gridLayout_14->addWidget(chartView[10]);
+
+            //QLineSeries *serie = new QLineSeries();
+            //*serie << QPointF(1, 1) << QPointF(2, 73) << QPointF(3, 268) << QPointF(4, 17) << QPointF(5, 4325) << QPointF(6, 723);
+
+            //chart[0]->addSeries(serie);
+
 }
 
 wk::~wk()
