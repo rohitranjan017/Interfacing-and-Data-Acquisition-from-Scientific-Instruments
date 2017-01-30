@@ -2,7 +2,7 @@
 #define ALLFUN5_H
 #include <QFile>
 #include <QTextStream>
-QFile ril("script.sh");
+QFile ril("scriptwk.sh");
 void sta5()
 {
     //conecting code starts
@@ -37,7 +37,7 @@ void sto5()
      pout<<"interact\n";
 
      ril.close();
-      system("script -c ./script.sh o.txt");
+      system("script -c ./scriptwk.sh wk.txt");
 }
 void spre5()
 { QTextStream pout(&ril);

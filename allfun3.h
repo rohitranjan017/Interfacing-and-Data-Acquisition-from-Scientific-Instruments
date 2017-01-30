@@ -2,7 +2,7 @@
 #define ALLFUN3_H
 #include <QFile>
 #include <QTextStream>
-QFile gil("script.sh");
+QFile gil("scriptwk.sh");
 void sta3()
 {
     //conecting code starts
@@ -37,7 +37,7 @@ void sto3()
      pout<<"interact\n";
 
      gil.close();
-      system("script -c ./script.sh o.txt");
+      system("script -c ./scriptwk.sh wk.txt");
 }
 void spre3()
 { QTextStream pout(&gil);

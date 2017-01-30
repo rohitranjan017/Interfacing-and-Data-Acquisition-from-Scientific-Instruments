@@ -102,6 +102,7 @@ private:
     Ui::MainWindow *ui;
     QTimer *timer;
     void conduct(int temp);
+    bool checkset(int out);
 };
 
 #endif // MAINWINDOW_H

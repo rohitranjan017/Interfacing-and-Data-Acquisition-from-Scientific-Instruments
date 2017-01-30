@@ -8,7 +8,7 @@
 #include <QtCharts/QLineSeries>
 #include <QCategoryAxis>
 #include <QLogValueAxis>
-
+#include <QtCharts>
 #include <QString>
 QT_CHARTS_USE_NAMESPACE
 namespace Ui {
@@ -28,9 +28,9 @@ public:
     QChart *chart[11];
     QChartView *chartView[11];
 
-    QCategoryAxis *axisX[11];
+    QValueAxis *axisX[11];
    // QCategoryAxis *axisY[11];
-   QLogValueAxis *axisY[11];
+   QValueAxis *axisY[11];
 private slots:
 
     void on_pushButton_2_clicked();
@@ -43,8 +43,11 @@ private slots:
 
     void on_trig_clicked();
 
+    void on_add_clicked();
+
 private:
     Ui::wk *ui;
+    void writelog();
 };
 
 #endif // WK_H

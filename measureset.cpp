@@ -25,7 +25,7 @@ measureset::measureset(QWidget *parent) :
 
     sto();
 
-    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/o.txt");
+    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/wk.txt");
 
     QVector< QString > v;
 

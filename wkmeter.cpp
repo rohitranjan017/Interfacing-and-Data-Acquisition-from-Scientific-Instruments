@@ -18,7 +18,7 @@ wkmeter::wkmeter(QWidget *parent) :
     read("ANA:BIAS-STAT?");
     sto();
 
-    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_7_0_GCC_64bit-Debug/o.txt");
+    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/wk.txt");
 
     QVector< QString > v;
 
@@ -47,7 +47,7 @@ wkmeter::wkmeter(QWidget *parent) :
             }
     }
 
-    if(v[0]=="0")
+    if(v[0][0]=="0")
     {
         QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);

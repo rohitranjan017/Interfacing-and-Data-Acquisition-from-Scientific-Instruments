@@ -2,7 +2,7 @@
 #define ALLFUN_H
 #include <QFile>
 #include <QTextStream>
-QFile fil("script.sh");
+QFile fil("scriptwk.sh");
 void sta()
 {
     //conecting code starts
@@ -37,7 +37,7 @@ void sto()
      pout<<"interact\n";
 
      fil.close();
-      system("script -c ./script.sh o.txt");
+      system("script -c ./scriptwk.sh wk.txt");
 }
 void spre()
 { QTextStream pout(&fil);
