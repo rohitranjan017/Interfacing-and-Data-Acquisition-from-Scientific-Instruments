@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QSplineSeries>
 #include <QPair>
+#include <QProgressDialog>
 #define sta sta6
 #define sto sto6
 #define read read6
@@ -220,8 +221,9 @@ MainWindow::MainWindow(QWidget *parent) :
    /* ptr->series[5]->append(40,adfsd);
     ptr->chart[5]->axisY()->setRange(adfsd+adfsd/2,adfsd-adfsd/2);*/
 }
-void MainWindow::conduct(int temp)
+void MainWindow::conduct(int temp,int impdel)
 {
+
     do
     {
         sta();
@@ -233,15 +235,26 @@ void MainWindow::conduct(int temp)
     }while(vec[0]=="'");
 
     tot=vec[0].toInt();
-
+    //Process.....1
+    //QProgressDialog progress(this);
+    //progress.setLabelText("Plotting");
+    //progress.setRange(0,11);
+   // progress.setModal(true);
     sta();
     write("ANA:TRIG");
     sto();
 
+    if(impdel==1)
     delay(ui->spinBox_3->value());
+    else
+    delay(ui->spinBox_4->value());
 
     for(int i=0;i<11;i++)
     {
+        //Progress.....
+        //progress.setValue(i);
+       // qApp->processEvents();
+
         sta();
         write("ANA:PROP1 "+props[i]);
         write("ANA:FIT 3");
@@ -344,6 +357,8 @@ void MainWindow::conduct(int temp)
             else
             out<<qSetFieldWidth(20)<<"NA";
 
+             qApp->processEvents();
+
             if(j!=25)
                 continue;
 
@@ -435,6 +450,8 @@ void MainWindow::conduct(int temp)
         }
         out<<endl;
 
+            //Process...
+        //qApp->processEvents();
 
     }
 
@@ -528,7 +545,7 @@ void MainWindow::showtime()
                   //PAUSE CODE
                   delay(ui->spinBox->value());
 
-                  conduct(1);
+                  conduct(1,1);
 
                   if(final==out1_setpoint )
                   {
@@ -565,7 +582,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                   delay(ui->spinBox->value());
 
-                 conduct(2);
+                 conduct(2,1);
 
                    if(final==out1_setpoint )
                    {
@@ -602,7 +619,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                   delay(ui->spinBox->value());
 
-                  conduct(3);
+                  conduct(3,1);
 
                    if(final==out1_setpoint )
                    {
@@ -639,7 +656,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                    delay(ui->spinBox->value());
 
-                   conduct(4);
+                   conduct(4,1);
 
                    if(final==out1_setpoint )
                    {
@@ -685,7 +702,7 @@ void MainWindow::showtime()
             //PAUSE CODE
                   delay(ui->spinBox_2->value());
 
-                  conduct(1);
+                  conduct(1,2);
 
                   if(final==out2_setpoint )
                   {
@@ -723,7 +740,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                    delay(final==out2_setpoint);
 
-                   conduct(2);
+                   conduct(2,2);
 
                    if(comp > final-out2_tol && comp<final+out2_tol )
                    {
@@ -759,7 +776,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
 
-                   conduct(3);
+                   conduct(3,2);
 
                    if(final==out2_setpoint )
                    {
@@ -796,7 +813,7 @@ void MainWindow::showtime()
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
 
-                   conduct(4);
+                   conduct(4,2);
 
                    if(final==out2_setpoint )
                    {
@@ -1093,8 +1110,8 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_13->setValue(s[9].toDouble());
 
-
-
+         qApp->processEvents();
+         //qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
    //Output2
 
          if(s[10]=="On")
@@ -1148,6 +1165,8 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_24->setValue(s[19].toDouble());
 
+         qApp->processEvents();
+        // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
    //Input1
          if(s[20]=="On")
          {
@@ -1182,6 +1201,8 @@ void MainWindow::on_connect_clicked()
          ui->comboBox_8->setCurrentText(s[22]);
         // qDebug()<<s[22];
 
+         qApp->processEvents();
+        // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
    //Input2
          if(s[23]=="On")
          {
@@ -1214,6 +1235,10 @@ void MainWindow::on_connect_clicked()
          }
 
          ui->comboBox_16->setCurrentText(s[25]);
+
+
+         qApp->processEvents();
+        // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
    //Input3
          if(s[26]=="On")
          {
@@ -1246,6 +1271,9 @@ void MainWindow::on_connect_clicked()
          }
 
          ui->comboBox_24->setCurrentText(s[28]);
+
+         qApp->processEvents();
+        // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
    //Input4
          if(s[29]=="On")
          {

@@ -313,7 +313,7 @@ void wk::on_trig_clicked()
 
 }
 
-void wk::on_add_clicked()
+/*void wk::on_add_clicked()
 {
    // fi.open(QIODevice::ReadOnly);
 
@@ -359,4 +359,4 @@ void wk::on_add_clicked()
 foo<<y<<" "<<mi<<" "<<Ma<<endl;
     //series[0]->attachAxis(axisY[0]);
 
-}
+}*/

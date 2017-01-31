@@ -101,7 +101,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
-    void conduct(int temp);
+    void conduct(int temp, int impdel);
     bool checkset(int out);
 };
 

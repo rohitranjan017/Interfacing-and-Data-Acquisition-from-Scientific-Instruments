@@ -43,7 +43,7 @@ private slots:
 
     void on_trig_clicked();
 
-    void on_add_clicked();
+    //void on_add_clicked();
 
 private:
     Ui::wk *ui;
