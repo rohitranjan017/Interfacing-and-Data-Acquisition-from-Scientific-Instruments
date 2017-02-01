@@ -5,7 +5,6 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QTime>
-#include "wk.h"
 #include "allfun6.h"
 #include <QPixmap>
 #include <QSplineSeries>
@@ -19,8 +18,9 @@
 #define vec vect
 #define readfile readfiles
 qreal m [11],M[11]; int pts[11];
-QFile fit("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/check.txt");
-
+QString folder;
+QFile fit("/home/phy/ControlX/check.txt");
+QString propy[11]={"Inductance","Capacitance","Q-factor","D-factor","Resistance","Reactance","Impedance","Admittance","Angle","Susceptance","Conductance"};
 void delay( int millisecondsToWait )
 {
     millisecondsToWait*=1000;
@@ -44,7 +44,7 @@ bool inmode1,inmode2,inmode3,inmode4;
 QString v[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê",
                 "300kê","Auto" };
 QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
-QFile file("script.sh");
+QFile file("/home/phy/ControlX/script.sh");
 QTextStream out(&file);
 QList <double> setpoints;
 bool MainWindow::checkset(int out)
@@ -78,7 +78,7 @@ bool MainWindow::checkset(int out)
         return false;
 }
 
-void con()
+void con(bool sig=false)
 {
     //conecting code starts
 
@@ -86,7 +86,10 @@ void con()
 
    out<<"#!/usr/bin/expect\n";
    out<<"spawn telnet 100.10.19.37\n";
-   out<<"sleep 0.55\n";
+   if(sig==true)
+       out<<"sleep 0.55\n";
+   else
+   out<<"sleep 0.2\n";
    out<<"send ";
    out<<"\"";
    out<<"\\n";
@@ -99,11 +102,15 @@ void con()
    out<<"\n";
    //connecting code ends
 }
-void clo()
+void clo(bool sig=false)
 {
 
     //connection terminating code starts//
-    out<<"sleep 0.55\n";
+
+    if(sig==true)
+        out<<"sleep 0.55\n";
+    else
+    out<<"sleep 0.2\n";
     out<<"send ";
     out<<"\"";
     out<<"\\";
@@ -138,7 +145,7 @@ void clo()
     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    system("script -c ./script.sh ctc.txt");
+    system("script -c /home/phy/ControlX/./script.sh /home/phy/ControlX/ctc.txt");
 
 }
 void pre()
@@ -161,7 +168,7 @@ void outs(QString s)
 
 void readfiles()
 {
-    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/wk.txt");
+    QFile file("/home/phy/ControlX/wk.txt");
 
     vec.clear();
 
@@ -220,6 +227,53 @@ MainWindow::MainWindow(QWidget *parent) :
 
    /* ptr->series[5]->append(40,adfsd);
     ptr->chart[5]->axisY()->setRange(adfsd+adfsd/2,adfsd-adfsd/2);*/
+
+    //Graphs...1
+
+
+
+
+    for(int i=0;i<11;i++){
+    series[i] = new QLineSeries();
+    chart[i] = new QChart();
+    axisX[i] = new QValueAxis();
+    axisY[i] = new QValueAxis();
+    series[i]->setName(propy[i]+" Vs Temperature");
+    series[i]->setPointsVisible(true);
+
+    chart[i]->addSeries(series[i]);
+
+
+    chart[i]->addAxis(axisY[i], Qt::AlignLeft);
+    chart[i]->setAxisX(axisX[i], series[i]);
+    series[i]->attachAxis(axisY[i]);
+    //series[i]->attachAxis(axisX[i]);
+
+
+   axisX[i]->setTitleText("Temperature");
+   axisY[i]->setTitleText(propy[i]);
+    axisY[i]->setLabelFormat("%0.4E");
+    series[i]->setPointsVisible(true);
+   // axisY[i]->setTickCount(10);
+    //axisX[i]->setRange();
+    //axisY[i]->setRange(0,250);
+
+
+    chartView[i] = new QChartView(chart[i]);
+    }
+
+            ui->gridLayout_4->addWidget(chartView[0]);
+            ui->gridLayout_5->addWidget(chartView[1]);
+            ui->gridLayout_6->addWidget(chartView[2]);
+            ui->gridLayout_7->addWidget(chartView[3]);
+            ui->gridLayout_8->addWidget(chartView[4]);
+            ui->gridLayout_9->addWidget(chartView[5]);
+            ui->gridLayout_10->addWidget(chartView[6]);
+            ui->gridLayout_11->addWidget(chartView[7]);
+            ui->gridLayout_12->addWidget(chartView[8]);
+            ui->gridLayout_13->addWidget(chartView[9]);
+            ui->gridLayout_14->addWidget(chartView[10]);
+
 }
 void MainWindow::conduct(int temp,int impdel)
 {
@@ -240,14 +294,86 @@ void MainWindow::conduct(int temp,int impdel)
     //progress.setLabelText("Plotting");
     //progress.setRange(0,11);
    // progress.setModal(true);
+
+    con();
+    outs("In1.selected?");
+    outs("In"+QString::number(temp)+".value?");
+    clo();
+
     sta();
     write("ANA:TRIG");
     sto();
 
     if(impdel==1)
+        ui->pushButton_3->setStyleSheet("background-color:green");
+    else
+        ui->pushButton_5->setStyleSheet("background-color:green");
+
+    QFile file("/home/phy/ControlX/ctc.txt");
+
+
+  QString s[40];
+  int j=0;
+    file.open(QIODevice::ReadOnly);
+       //fi.open(QIODevice::Append);
+       //QTextStream foo(&fi);
+
+
+
+      while (!file.atEnd())
+      {
+
+               char a[1025];
+
+                   file.readLine(a,sizeof(a));
+
+                   QString temp;
+
+                   for(uint i=0;i<qstrlen(a)-3;i++)
+                    temp=temp+a[i];
+                   //qDebug()<<temp;
+
+                   if(temp=="On" || temp=="Off")
+                   {
+                       int k=0; s[0]=temp; j++;
+
+                      while(k<2)
+                      {
+                             file.readLine(a,sizeof(a));
+                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              s[j]=s[j]+a[i];
+
+                            j++;
+
+                          //  qDebug()<<s[j-1];
+
+
+                          k++;
+                      }
+
+                      break;
+                   }
+
+      }
+
+      if(temp==1)
+          ui->lcdNumber->display(s[1]);
+      else if(temp==2)
+          ui->lcdNumber_2->display(s[1]);
+      else if(temp==3)
+          ui->lcdNumber_3->display(s[1]);
+      else
+          ui->lcdNumber_4->display(s[1]);
+
+    if(impdel==1)
     delay(ui->spinBox_3->value());
     else
     delay(ui->spinBox_4->value());
+
+
+
+
+
 
     for(int i=0;i<11;i++)
     {
@@ -260,63 +386,10 @@ void MainWindow::conduct(int temp,int impdel)
         write("ANA:FIT 3");
         sto();
 
-        QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/Graphs/"+props[i]+"~T"+".txt");
+        QFile file1("/home/phy/Desktop/"+folder+"/"+props[i]+"~T"+".txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
-
-        con();
-        outs("In1.selected?");
-        outs("In"+QString::number(temp)+".value?");
-        clo();
-
-        QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/ctc.txt");
-
-
-      QString s[40];
-      int j=0;
-        file.open(QIODevice::ReadOnly);
-           //fi.open(QIODevice::Append);
-           //QTextStream foo(&fi);
-
-          while (!file.atEnd())
-          {
-
-                   char a[1025];
-
-                       file.readLine(a,sizeof(a));
-
-                       QString temp;
-
-                       for(uint i=0;i<qstrlen(a)-3;i++)
-                        temp=temp+a[i];
-                       //qDebug()<<temp;
-
-                       if(temp=="On" || temp=="Off")
-                       {
-                           int k=0; s[0]=temp; j++;
-
-                          while(k<2)
-                          {
-                                 file.readLine(a,sizeof(a));
-                                  for(uint i=0;i<qstrlen(a)-3;i++)
-                                  s[j]=s[j]+a[i];
-
-                                j++;
-
-                              //  qDebug()<<s[j-1];
-
-
-                              k++;
-                          }
-
-                          break;
-                       }
-
-          }
-
-
-
 
         do
         {
@@ -328,14 +401,14 @@ void MainWindow::conduct(int temp,int impdel)
         }while(vec[0]=="'" or vec[0]=="No data");
 
         sta();
-
+        //ui->label_2->setText("");
         for(int j=0;j<=tot;j++)
         {
            read("ANA:POINT? "+QString::number(j));
         }
 
         sto();
-
+        //ui->label_2->setText("Plotting...");
         readfile();
 
         if(flag==0 and i==0)
@@ -351,14 +424,14 @@ void MainWindow::conduct(int temp,int impdel)
         for(int j=0;j<vec.size();j++)
         {//qDebug()<<vec[j];
             QStringList my = vec[j].split(',');
-
+            //ui->label_2->setText("");
             if(my.size()>=2)
             out<<qSetFieldWidth(20)<<my[1];
             else
             out<<qSetFieldWidth(20)<<"NA";
 
              qApp->processEvents();
-
+           // ui->label_2->setText("");
             if(j!=25)
                 continue;
 
@@ -372,7 +445,8 @@ void MainWindow::conduct(int temp,int impdel)
                   double xt=cur.toDouble();
                   qreal y=qreal(yt);
                   qreal x=qreal(xt);
-            qDebug()<<x<<" "<<y;
+                  //ui->label_2->setText("Plotting...");
+            //qDebug()<<x<<" "<<y;
                   /*  if(y>0)
              {
                   if(pts==0)
@@ -439,10 +513,10 @@ void MainWindow::conduct(int temp,int impdel)
 
             }
 
-            ptr->series[i]->append(x,y);
-            ptr->axisY[i]->setRange(m[i]-(M[i]-m[i])/10,M[i]+(M[i]-m[i])/10); pts[i]++;
-            ptr->axisX[i]->setRange(startx,x+2);
-
+            series[i]->append(x,y);
+            axisY[i]->setRange(m[i]-(M[i]-m[i])/10,M[i]+(M[i]-m[i])/10); pts[i]++;
+            axisX[i]->setRange(startx,x+2);
+           // ui->label_2->setText("");
 
              //foo<<i<<" "<<pts[i]<<endl;
                // foo<<y<<" "<<m[i]<<" "<<M[i]<<endl<<endl;
@@ -477,7 +551,7 @@ void MainWindow::showtime()
     outs("In3.value?");
     outs("In4.value?");
     clo();
-    QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/ctc.txt");
+    QFile file("/home/phy/ControlX/ctc.txt");
 
   QString s[40];
   int j=0;
@@ -539,7 +613,7 @@ void MainWindow::showtime()
 
               if(comp>min and comp<max )
               {
-                  ui->pushButton_3->setStyleSheet("background-color:green");
+                 // ui->pushButton_3->setStyleSheet("background-color:green");
                //   setpoints.clear();
 
                   //PAUSE CODE
@@ -550,9 +624,13 @@ void MainWindow::showtime()
                   if(final==out1_setpoint )
                   {
                       timer->stop();
+
+                       ui->pushButton_2->setStyleSheet("background-color:black");
                       con();
                       outs("OutputEnable = Off");
+
                       clo();
+
                   }
                   else
                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
@@ -577,7 +655,7 @@ void MainWindow::showtime()
 
                if(comp>min and comp<max )
                {
-                   ui->pushButton_3->setStyleSheet("background-color:green");
+                   //ui->pushButton_3->setStyleSheet("background-color:green");
                   // setpoints.clear();
              //PAUSE CODE
                   delay(ui->spinBox->value());
@@ -587,6 +665,8 @@ void MainWindow::showtime()
                    if(final==out1_setpoint )
                    {
                        timer->stop();
+
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -614,7 +694,7 @@ void MainWindow::showtime()
 
                if(comp>min and comp<max )
                {
-                   ui->pushButton_3->setStyleSheet("background-color:green");
+                  // ui->pushButton_3->setStyleSheet("background-color:green");
                    //setpoints.clear();
              //PAUSE CODE
                   delay(ui->spinBox->value());
@@ -624,6 +704,7 @@ void MainWindow::showtime()
                    if(final==out1_setpoint )
                    {
                        timer->stop();
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -651,7 +732,7 @@ void MainWindow::showtime()
 
                if(comp>min and comp<max )
                {
-                   ui->pushButton_3->setStyleSheet("background-color:green");
+                   //ui->pushButton_3->setStyleSheet("background-color:green");
                    //setpoints.clear();
              //PAUSE CODE
                    delay(ui->spinBox->value());
@@ -661,6 +742,7 @@ void MainWindow::showtime()
                    if(final==out1_setpoint )
                    {
                        timer->stop();
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -691,13 +773,13 @@ void MainWindow::showtime()
               ui->lcdNumber->display(s[4]);
               double comp=s[4].toDouble();
 
-              if(setpoints.size()>=5)
+              /*if(setpoints.size()>=5)
                   setpoints.pop_back();
-              setpoints.push_back(comp);
+              setpoints.push_back(comp);*/
 
               if(comp>min and comp<max )
               {
-                  ui->pushButton_5->setStyleSheet("background-color:green");
+                  //ui->pushButton_5->setStyleSheet("background-color:green");
                   //setpoints.clear();
             //PAUSE CODE
                   delay(ui->spinBox_2->value());
@@ -707,6 +789,7 @@ void MainWindow::showtime()
                   if(final==out2_setpoint )
                   {
                       timer->stop();
+                       ui->pushButton_2->setStyleSheet("background-color:black");
                       con();
                       outs("OutputEnable = Off");
                       clo();
@@ -734,7 +817,7 @@ void MainWindow::showtime()
 
                if(comp>min and comp<max )
                {
-                   ui->pushButton_5->setStyleSheet("background-color:green");
+                  // ui->pushButton_5->setStyleSheet("background-color:green");
                    //setpoints.clear();
 
              //PAUSE CODE
@@ -745,6 +828,7 @@ void MainWindow::showtime()
                    if(comp > final-out2_tol && comp<final+out2_tol )
                    {
                        timer->stop();
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -771,7 +855,7 @@ void MainWindow::showtime()
 
               if(comp>min and comp<max )
                {
-                   ui->pushButton_5->setStyleSheet("background-color:green");
+                   //ui->pushButton_5->setStyleSheet("background-color:green");
                    //setpoints.clear();
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
@@ -781,6 +865,7 @@ void MainWindow::showtime()
                    if(final==out2_setpoint )
                    {
                        timer->stop();
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -808,7 +893,7 @@ void MainWindow::showtime()
 
                if(comp>min and comp<max )
                {
-                   ui->pushButton_5->setStyleSheet("background-color:green");
+                   //ui->pushButton_5->setStyleSheet("background-color:green");
                    //setpoints.clear();
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
@@ -818,6 +903,7 @@ void MainWindow::showtime()
                    if(final==out2_setpoint )
                    {
                        timer->stop();
+                        ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
@@ -844,7 +930,54 @@ void MainWindow::on_pushButton_2_clicked()
 
     if(z==0)
     {
+        QString temp;
 
+        while(1){
+
+            folder=QInputDialog::getText(this,"Folder","Enter Folder name");
+            QFile file("/home/phy/ControlX/fault.sh");
+            file.open(QIODevice::WriteOnly);
+            QTextStream out(&file);
+            out<<"#!/bin/sh\n";
+            out<<"mkdir "+folder<<"\n";
+            file.close();
+            system("script -c /home/phy/ControlX/./fault.sh /home/phy/ControlX/bat.txt");
+            QFile file1("/home/phy/ControlX/bat.txt");
+            file1.open(QIODevice::ReadOnly);
+            int i=0;
+            while(!file1.atEnd())
+            {
+                char a[1024];
+
+                file1.readLine(a,sizeof(a));
+                i++;
+
+
+             //QFile file("/home/phy/ControlX/bat.txt");
+
+             //file.open(QIODevice::ReadOnly);
+
+             /*if(!file.size()<=2)
+                 break;
+             else*/
+
+        }
+
+            if(i==4)
+            {
+               QMessageBox::StandardButton reply;
+              reply=QMessageBox::question(this,"CONFIRM","Folder already exists. Do you wish to overwrite?",QMessageBox::Yes|QMessageBox::No);\
+
+              if(reply==QMessageBox::Yes)
+                 break;
+
+            }
+            else
+                break;
+
+
+
+}
         do
         {
             sta();
@@ -872,8 +1005,8 @@ void MainWindow::on_pushButton_2_clicked()
 
         for(int i=0;i<11;i++)
         {
-            QFile file1("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/Graphs/"+props[i]+"~T"+".txt");
-            file1.open(QIODevice::Append);
+            QFile file1("/home/phy/Desktop/"+folder+"/"+props[i]+"~T"+".txt");
+            file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
 
@@ -911,7 +1044,7 @@ void MainWindow::on_pushButton_2_clicked()
         ui->pushButton_3->setStyleSheet("background-color:red");
         ui->pushButton_5->setStyleSheet("background-color:red");
 
-        timer->start(1500);
+        timer->start(1000);
 
 
     }
@@ -925,7 +1058,11 @@ void MainWindow::on_pushButton_2_clicked()
 
             clo();
 
+             ui->pushButton_2->setStyleSheet("background-color:black");
+
             timer->stop();
+
+
 
             QMessageBox::information(this,"OUTPUT","Ouput Disabled");
     }
@@ -937,12 +1074,19 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_connect_clicked()
 {
-    con();
+    /*QLabel *lbl = new QLabel;
+    QMovie *movie = new QMovie(":/gears.gif");
+    lbl->setMovie(movie);
+    lbl->setScaledContents(true);
+    //lbl->show();
+    movie->start();*/
+
+    /*con();
     outs("Connected!!!");
     clo();
+*/
 
-
-    QMessageBox::StandardButton reply;
+    /*QMessageBox::StandardButton reply;
 
      reply = QMessageBox::information(this, "Status", "CONNECTED!!!",QMessageBox::Ok);
 
@@ -951,11 +1095,11 @@ void MainWindow::on_connect_clicked()
          con();
          outs("popup.close");
          clo();
-     }
+     }*/
 
 
 
-   con();
+   con(true);
    //Output1
 
        outs("Out1.selected?");
@@ -1006,9 +1150,9 @@ void MainWindow::on_connect_clicked()
        outs("In3.value?");
        outs("In4.value?");
 
-       clo();
+       clo(true);
 
-       QFile file("/home/dell/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/ctc.txt");
+       QFile file("/home/phy/ControlX/ctc.txt");
 
 
      QString s[100];
@@ -1312,7 +1456,8 @@ void MainWindow::on_connect_clicked()
          ui->lcdNumber_3->display(s[37]);
          ui->lcdNumber_4->display(s[38]);
 
-
+        //movie->stop();
+        //lbl->close();
 }
 
 void MainWindow::on_out1mode_clicked()
@@ -1954,9 +2099,29 @@ void MainWindow::on_out2mode_4_clicked()
         mode4=!mode4;
 }
 
-void MainWindow::on_pushButton_6_clicked()
+/*void MainWindow::on_pushButton_6_clicked()
 {
     //ptr = new wk(this);
     ptr->show();
 
+}*/
+
+void MainWindow::on_meas_setup_clicked()
+{
+   meas->show();
 }
+
+void MainWindow::on_trace_setup_clicked()
+{
+    trace->show();
+}
+
+/*void MainWindow::on_doubleSpinBox_6_editingFinished()
+{
+    con();
+    double temp=ui->doubleSpinBox_6->value();
+    QString s=QString:
+    outs("Out1.PID.setpoint "+arg1);
+
+    clo();
+}*/

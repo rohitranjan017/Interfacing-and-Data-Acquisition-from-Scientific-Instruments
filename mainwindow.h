@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 #include<QTimer>
 #include <QMainWindow>
-#include <wk.h>
+#include <measureset.h>
+#include <traceset.h>
+#include <QtCharts>
 namespace Ui {
 class MainWindow;
 }
@@ -14,11 +16,21 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-       wk* ptr=new wk;
+       //wk* ptr=new wk;
+       QLineSeries *series[11];
+       QChart *chart[11];
+       QChartView *chartView[11];
+
+       QValueAxis *axisX[11];
+      // QCategoryAxis *axisY[11];
+      QValueAxis *axisY[11];
+      measureset* meas=new measureset;
+      traceset* trace=new traceset;
 
 public slots:
     void showtime();
     //Ui::wk *ptr;
+
 
 private slots:
     void on_pushButton_2_clicked();
@@ -36,7 +48,7 @@ private slots:
 
     void on_comboBox_2_currentIndexChanged(const QString &arg1);
 
-    void on_doubleSpinBox_6_valueChanged(const QString &arg1);
+  void on_doubleSpinBox_6_valueChanged(const QString &arg1);
 
     void on_doubleSpinBox_9_valueChanged(const QString &arg1);
 
@@ -96,7 +108,13 @@ private slots:
 
     void on_out2mode_4_clicked();
 
-    void on_pushButton_6_clicked();
+  //  void on_pushButton_6_clicked();
+
+    void on_meas_setup_clicked();
+
+    void on_trace_setup_clicked();
+
+    //void on_doubleSpinBox_6_editingFinished();
 
 private:
     Ui::MainWindow *ui;
