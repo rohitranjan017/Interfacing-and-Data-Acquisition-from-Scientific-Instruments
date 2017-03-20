@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include<QTimer>
+#include <QTimer>
 #include <QMainWindow>
 #include <ke6221.h>
 #include <ke2182a.h>
@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
        QLineSeries *series;
+
        QChart *chart;
        QChartView *chartView;
 

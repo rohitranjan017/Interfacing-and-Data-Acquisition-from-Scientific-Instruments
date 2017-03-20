@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui sql
-QT      +=charts
+QT      += charts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = CTC100
@@ -20,9 +20,9 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     allfun.h \
     allfun3.h \
-    allfun6.h \
     ke6221.h \
-    ke2182a.h
+    ke2182a.h \
+    Scriptwrite.h
 
 FORMS    += mainwindow.ui \
     ke6221.ui \

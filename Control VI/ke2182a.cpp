@@ -6,9 +6,15 @@ ke2182a::ke2182a(QWidget *parent) :
     ui(new Ui::ke2182a)
 {
     ui->setupUi(this);
+
 }
 
 ke2182a::~ke2182a()
 {
     delete ui;
+}
+
+void ke2182a::on_NoofPoints_valueChanged(double arg1)
+{
+    total_points= (int)arg1;
 }

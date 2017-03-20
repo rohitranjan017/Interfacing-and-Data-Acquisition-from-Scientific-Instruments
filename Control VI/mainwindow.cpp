@@ -5,22 +5,18 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QTime>
-#include "allfun6.h"
-#include <QPixmap>
-#include <QSplineSeries>
+#include "Scriptwrite.h"
 #include <QPair>
-#include <QProgressDialog>
-#define sta sta6
-#define sto sto6
-#define read read6
-#define write write6
-#define props prop
+#include <QChart>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+//#define props prop
+QT_CHARTS_USE_NAMESPACE
 #define vec vect
-#define readfile readfiles
-qreal m [11],M[11]; int pts[11];
-QString folder;
-QFile fit("/home/phy/ControlX/check.txt");
-QString propy[11]={"Inductance","Capacitance","Q-factor","D-factor","Resistance","Reactance","Impedance","Admittance","Angle","Susceptance","Conductance"};
+int point;
+qreal min_value,Max_value;
+QString folder_name;
+
 void delay( int millisecondsToWait )
 {
     millisecondsToWait*=1000;
@@ -31,52 +27,21 @@ void delay( int millisecondsToWait )
         QCoreApplication::processEvents( QEventLoop::AllEvents, 100 );
     }
 }
+
 QVector< QString > vect;
-QVector <QPointF > points[11];
-int tot; int startx;
-char c1='R',c2='R',c3='R',c4='R';
-bool z; bool flag;
-bool mode1;
-bool mode2;
-bool mode3;
-bool mode4;
-bool inmode1,inmode2,inmode3,inmode4;
-QString v[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê",
-                "300kê","Auto" };
-QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
+//QVector <QPointF > points;
+
+int noof_points;
+int firstx;
+char sensor_type1='R',sensor_type2='R',sensor_type3='R',sensor_type4='R';
+bool output_status,output_mode1,output_mode2,output_output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
+QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê","300kê","Auto" };
+//QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
+
 QFile file("/home/phy/ControlX/script.sh");
+
 QTextStream out(&file);
-QList <double> setpoints;
-bool MainWindow::checkset(int out)
-{
-    if(setpoints.size()==5)
-    {
-        auto mm = std::minmax_element(setpoints.begin(), setpoints.end());
-
-        fit.open(QIODevice::Append);
-        QTextStream foo(&fit);
-
-        foo<<*mm.second-*mm.first<<endl;
-
-        if(out==1)
-        {
-            if(*mm.second-*mm.first<=ui->doubleSpinBox_25->value())
-                return true;
-            else
-                return false;
-
-        }
-        else
-        {
-            if(*mm.second-*mm.first<=ui->doubleSpinBox_38->value())
-                return true;
-            else
-                return false;
-        }
-    }
-    else
-        return false;
-}
+//QList <double> setpoints;
 
 void con(bool sig=false)
 {
@@ -146,7 +111,6 @@ void clo(bool sig=false)
     //connection terminating code ends//
     file.close();
     system("script -c /home/phy/ControlX/./script.sh /home/phy/ControlX/ctc.txt");
-
 }
 void pre()
 {
@@ -192,11 +156,7 @@ void readfiles()
 
                 }
 
-                    if(temp=="'" or temp=="No data")
-                        vec.push_back("NA,NA             ");
-                    else
                     vec.push_back(temp);
-                //qDebug()<<temp;
             }
     }
 }
@@ -209,10 +169,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(int i=0;i<11;i++)
     {
-           ui->comboBox_8->addItem(v[i]);
-           ui->comboBox_16->addItem(v[i]);
-           ui->comboBox_24->addItem(v[i]);
-           ui->comboBox_22->addItem(v[i]);
+           ui->comboBox_8->addItem(sensor_range[i]);
+           ui->comboBox_16->addItem(sensor_range[i]);
+           ui->comboBox_24->addItem(sensor_range[i]);
+           ui->comboBox_22->addItem(sensor_range[i]);
     }
 
     timer=new QTimer();
@@ -241,27 +201,14 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::conduct(int temp,int impdel)
 {
 
-    do
-    {
-        sta();
-        read("ANA:POINTS?");
-        sto();
 
-        readfile();
 
-    }while(vec[0]=="'");
-
-    tot=vec[0].toInt();
-
+    noof_points=ke2->total_points;
 
     con();
-    outs("In1.selected?");
+    outs("In1.selected?"); //
     outs("In"+QString::number(temp)+".value?");
     clo();
-
-    sta();
-    write("ANA:TRIG");
-    sto();
 
     if(impdel==1)
         ui->pushButton_3->setStyleSheet("background-color:green");
@@ -319,169 +266,78 @@ void MainWindow::conduct(int temp,int impdel)
       else
           ui->lcdNumber_4->display(s[1]);
 
-    if(impdel==1)
-    delay(ui->spinBox_3->value());
-    else
-    delay(ui->spinBox_4->value());
+
+
+//write code for 5 points
 
 
 
 
-
-
-    for(int i=0;i<11;i++)
-    {
-        //Progress.....
-        //progress.setValue(i);
-       // qApp->processEvents();
-
-        sta();
-        write("ANA:PROP1 "+props[i]);
-        write("ANA:FIT 3");
-        sto();
-
-        QFile file1("/home/phy/Desktop/"+folder+"/"+props[i]+"~T"+".txt");
+        QFile file1("/home/phy/Desktop/"+folder_name+"/"+"V~T"+".txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
 
-        do
-        {
-            sta();
-            read("ANA:POINT? 0");
-            sto();
-            readfile();
 
-        }while(vec[0]=="'" or vec[0]=="No data");
 
-        sta();
+        start_connection();
         //ui->label_2->setText("");
-        for(int j=0;j<=tot;j++)
+        for(int j=0;j<=noof_points;j++)
         {
-           read("ANA:POINT? "+QString::number(j));
+           read_string("ANA:POINT? "+QString::number(j));
         }
 
-        sto();
-        //ui->label_2->setText("Plotting...");
-        readfile();
+        stop_connection();
+        //ui->label_2->setText("Plotting...");0
+        readfiles();
 
-        if(flag==0 and i==0)
-        { flag=1; i--; continue;}
-        else
-        {
-            flag=0;
-        }
+
 
          out<<qSetFieldWidth(20)<<s[1];
 
 
-        for(int j=0;j<vec.size();j++)
-        {//qDebug()<<vec[j];
-            QStringList my = vec[j].split(',');
-            //ui->label_2->setText("");
-            if(my.size()>=2)
-            out<<qSetFieldWidth(20)<<my[1];
-            else
-            out<<qSetFieldWidth(20)<<"NA";
+           //write code for file write of resistance
 
              qApp->processEvents();
-           // ui->label_2->setText("");
-            if(j!=25)
-                continue;
 
-            if(my[0]=="NA")
-                continue;
-            else
-            {
-                  QString cur=my[1];
+                  QString cur=my[1];//change accordingly
                   double yt=cur.toDouble();
                   cur=s[1];
                   double xt=cur.toDouble();
                   qreal y=qreal(yt);
                   qreal x=qreal(xt);
-                  //ui->label_2->setText("Plotting...");
-            //qDebug()<<x<<" "<<y;
-                  /*  if(y>0)
-             {
-                  if(pts==0)
-                      ptr->axisY[i]->setRange(y-y/100,y+y/100);
-                   else
-                      if(y>=ptr->axisY[i]->max())
-                      { foo<<y<<"    1"<<ptr->axisY[i]->max()<<endl; ptr->axisY[i]->setMax(y+(y-ptr->axisY[i]->max()));}
-                        else
-                          if(y<ptr->axisY[i]->min())
-                            { foo<<y<<"    2"<<ptr->axisY[i]->min()<<endl; ptr->axisY[i]->setMin(y-(ptr->axisY[i]->min()-y));}
-
-                    ptr->series[i]->append(x,y);
-                  pts++;
-                  ptr->axisX[i]->setRange(ptr->axisX[i]->min(),x+10);}
-
-                    else
-                    {
-                        if(pts==0)
-                            ptr->axisY[i]->setRange(y+y/100,y-y/100);
-                         else
-                            if(y>=ptr->axisY[i]->max())
-                              { foo<<y<<"    1"<<ptr->axisY[i]->max()<<endl; ptr->axisY[i]->setMax(y+(y-ptr->axisY[i]->max()));}
-                              else
-                                if(y<ptr->axisY[i]->min())
-                                   {foo<<y<<"    2"<<ptr->axisY[i]->min()<<endl; ptr->axisY[i]->setMin(y-(ptr->axisY[i]->min()-y));}
-
-                          ptr->series[i]->append(x,y);
-                        pts++;
-                        ptr->axisX[i]->setRange(ptr->axisX[i]->min(),x+10);
-                    }*/
-
-            //char a[1025];
-
-           /*     fi.readLine(a,sizeof(a));
-                QString cur=a;
-            double yt=cur.toDouble();
-            fi.readLine(a,sizeof(a));
-            cur=a;
-            double xt=cur.toDouble();
-            qreal y=qreal(yt);
-            qreal x=qreal(xt);*/
 
 
-
-            if(pts[i]==0)
+            if(point==0)
             {
                 if(y>0)
-                {m[i]=y-y/5000; M[i]=y+y/5000;}
+                {min_value=y-y/5000; max_value=y+y/5000;}
                 else
-                {m[i]=y+y/5000; M[i]=y-y/5000;}
-                startx=x-2;
+                {min_value=y+y/5000; max_value=y-y/5000;}
+                firstx=x-2;
 
 
             }
             else
             {
-                if(y<m[i])
-                    m[i]=y;
+                if(y<min_value)
+                    min_value=y;
                 else
-                if(y>M[i])
-                    M[i]=y;
-                //ptr->axisX[i]->setMax(x+5);
+                if(y>max_value)
+                    max_value=y;
 
 
             }
 
-            series[i]->append(x,y);
-            axisY[i]->setRange(m[i]-(M[i]-m[i])/10,M[i]+(M[i]-m[i])/10); pts[i]++;
-            axisX[i]->setRange(startx,x+2);
-           // ui->label_2->setText("");
+            series->append(x,y);
+            axisY->setRange(min_value-(max_value-min_value)/10,max_value+(max_value-min_value)/10); point++;
+            axisX->setRange(firstx,x+2);
 
-             //foo<<i<<" "<<pts[i]<<endl;
-               // foo<<y<<" "<<m[i]<<" "<<M[i]<<endl<<endl;
-            }
-        }
+
+
         out<<endl;
 
-            //Process...
-        //qApp->processEvents();
 
-    }
 
 }
 MainWindow::~MainWindow()
@@ -877,18 +733,18 @@ void MainWindow::on_pushButton_2_clicked()
 {
 
 
-    if(z==0)
+    if(output_status==0)
     {
         QString temp;
 
         while(1){
 
-            folder=QInputDialog::getText(this,"Folder","Enter Folder name");
+            folder_name=QInputDialog::getText(this,"Folder","Enter Folder name");
             QFile file("/home/phy/ControlX/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
             out<<"#!/bin/sh\n";
-            out<<"mkdir "+folder<<"\n";
+            out<<"mkdir "+folder_name<<"\n";
             file.close();
             system("script -c /home/phy/ControlX/./fault.sh /home/phy/ControlX/bat.txt");
             QFile file1("/home/phy/ControlX/bat.txt");
@@ -920,53 +776,19 @@ void MainWindow::on_pushButton_2_clicked()
 
 
 }
-        do
-        {
-            sta();
-            read("ANA:POINTS?");
-            sto();
 
-            readfile();
-
-        }while(vec[0]=="'" or vec[0]=="No data");
-
-        tot=vec[0].toInt();
-
-        sta();
-
-        for(int j=0;j<=tot;j++)
-        {
-           read("ANA:POINT? "+QString::number(j));
-        }
-
-        sto();
-
-        readfile();
+     //Write code
 
 
-
-        for(int i=0;i<11;i++)
-        {
-            QFile file1("/home/phy/Desktop/"+folder+"/"+props[i]+"~T"+".txt");
+            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"V~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
 
-            out<<qSetFieldWidth(20)<<"T(K)\\F(Hz)";
-
-            for(int j=0;j<vec.size();j++)
-            {   //qDebug()<<vec[j];
-                QStringList my = vec[j].split(',');
-                if(my.size()>0)
-                out<<qSetFieldWidth(20)<<my[0];
-                else
-                out<<qSetFieldWidth(20)<<"NA";
-            }
-
-            out<<endl<<endl;
+            out<<qSetFieldWidth(20)<<"T(K)"<<qSetFieldWidth(20)<<"R(ohm)"<<endl;
 
 
-        }
+
     //6 8 17 19
 
 
@@ -1009,7 +831,7 @@ void MainWindow::on_pushButton_2_clicked()
             QMessageBox::information(this,"OUTPUT","Ouput Disabled");
     }
 
-    z=!z;
+    output_status=!output_status;
 
 
 }
@@ -1124,7 +946,7 @@ void MainWindow::on_connect_clicked()
 
          if(s[0]=="On")
          {
-             mode1=1;
+             output_mode1=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out1mode->setIcon(ButtonIcon);
@@ -1133,14 +955,14 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-              mode1=0;
+              output_mode1=0;
 
               //on_out1mode_clicked();
          }
 
          if(s[33]=="On")
          {
-             mode3=1;
+             output_mode3=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_5->setIcon(ButtonIcon);
@@ -1149,7 +971,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-              mode3=0;
+              output_mode3=0;
 
               //on_out2mode_5_clicked();
          }
@@ -1180,7 +1002,7 @@ void MainWindow::on_connect_clicked()
 
          if(s[10]=="On")
          {
-             mode2=1;
+             output_mode2=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode->setIcon(ButtonIcon);
@@ -1189,13 +1011,13 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-             mode2=0;
+             output_mode2=0;
 
              //on_out2mode_clicked();
          }
          if(s[34]=="On")
          {
-             mode4=1;
+             output_mode4=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_4->setIcon(ButtonIcon);
@@ -1204,7 +1026,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-              mode4=0;
+              output_mode4=0;
 
               //on_out2mode_4_clicked();
          }
@@ -1234,7 +1056,7 @@ void MainWindow::on_connect_clicked()
    //Input1
          if(s[20]=="On")
          {
-             inmode1=1;
+             input_mode1=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_2->setIcon(ButtonIcon);
@@ -1243,7 +1065,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-             inmode1=0;
+             input_mode1=0;
              //on_out2mode_2_clicked();
          }
          ui->comboBox_7->setCurrentText(s[21]);
@@ -1270,7 +1092,7 @@ void MainWindow::on_connect_clicked()
    //Input2
          if(s[23]=="On")
          {
-             inmode2=1;
+             input_mode2=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_6->setIcon(ButtonIcon);
@@ -1306,7 +1128,7 @@ void MainWindow::on_connect_clicked()
    //Input3
          if(s[26]=="On")
          {
-             inmode3=1;
+             input_mode3=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_10->setIcon(ButtonIcon);
@@ -1315,7 +1137,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-             inmode3=0;
+             input_mode3=0;
              //on_out2mode_10_clicked();
          }
          ui->comboBox_23->setCurrentText(s[27]);
@@ -1341,7 +1163,7 @@ void MainWindow::on_connect_clicked()
    //Input4
          if(s[29]=="On")
          {
-             inmode4=1;
+             input_mode4=1;
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_9->setIcon(ButtonIcon);
@@ -1350,7 +1172,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-             inmode4=0;
+             input_mode4=0;
              //on_out2mode_9_clicked();
          }
          ui->comboBox_21->setCurrentText(s[30]);
@@ -1382,7 +1204,7 @@ void MainWindow::on_connect_clicked()
 
 void MainWindow::on_out1mode_clicked()
 {
-    if(mode1==0)
+    if(output_mode1==0)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1405,7 +1227,7 @@ void MainWindow::on_out1mode_clicked()
         clo();
     }
 
-    mode1=!mode1;
+    output_mode1=!output_mode1;
 }
 
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
@@ -1502,7 +1324,7 @@ void MainWindow::on_doubleSpinBox_13_valueChanged(const QString &arg1)
 
 void MainWindow::on_out2mode_clicked()
 {
-    if(mode2==0)
+    if(output_mode2==0)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1525,7 +1347,7 @@ void MainWindow::on_out2mode_clicked()
         clo();
     }
 
-    mode2=!mode2;
+    output_mode2=!output_mode2;
 }
 
 void MainWindow::on_comboBox_5_currentIndexChanged(const QString &arg1)
@@ -1620,7 +1442,7 @@ void MainWindow::on_doubleSpinBox_24_valueChanged(const QString &arg1)
 
 void MainWindow::on_out2mode_2_clicked()
 {
-    if(inmode1==1)
+    if(input_mode1==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1643,12 +1465,12 @@ void MainWindow::on_out2mode_2_clicked()
         clo();
     }
 
-    inmode1=!inmode1;
+    input_mode1=!input_mode1;
 }
 
 void MainWindow::on_out2mode_6_clicked()
 {
-    if(inmode2==1)
+    if(input_mode2==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1671,12 +1493,12 @@ void MainWindow::on_out2mode_6_clicked()
         clo();
     }
 
-    inmode2=!inmode2;
+    input_mode2=!input_mode2;
 }
 
 void MainWindow::on_out2mode_10_clicked()
 {
-    if(inmode3==1)
+    if(input_mode3==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1699,12 +1521,12 @@ void MainWindow::on_out2mode_10_clicked()
         clo();
     }
 
-    inmode3=!inmode3;
+    input_mode3=!input_mode3;
 }
 
 void MainWindow::on_out2mode_9_clicked()
 {
-    if(inmode4==1)
+    if(input_mode4==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1727,7 +1549,7 @@ void MainWindow::on_out2mode_9_clicked()
         clo();
     }
 
-    inmode4=!inmode4;
+    input_mode4=!input_mode4;
 }
 
 void MainWindow::on_comboBox_7_currentIndexChanged(const QString &arg1)
@@ -1738,19 +1560,19 @@ void MainWindow::on_comboBox_7_currentIndexChanged(const QString &arg1)
                 ui->comboBox_8->removeItem(0);
 
                 ui->comboBox_8->addItem("2.5V");
-            c1='D';
+            sensor_type1='D';
        }
-       else if(c1=='D')
+       else if(sensor_type1=='D')
        {
            ui->comboBox_8->removeItem(0);
 
            for(int i=0;i<11;i++)
            {
-                  ui->comboBox_8->addItem(v[i]);
+                  ui->comboBox_8->addItem(sensor_range[i]);
            }
 
 
-           c1='R';
+           sensor_type1='R';
        }
 
        con();
@@ -1768,19 +1590,19 @@ void MainWindow::on_comboBox_15_currentIndexChanged(const QString &arg1)
              ui->comboBox_16->removeItem(0);
 
              ui->comboBox_16->addItem("2.5V");
-         c2='D';
+         sensor_type2='D';
     }
-    else if(c2=='D')
+    else if(sensor_type2=='D')
     {
         ui->comboBox_16->removeItem(0);
 
         for(int i=0;i<11;i++)
         {
-               ui->comboBox_16->addItem(v[i]);
+               ui->comboBox_16->addItem(sensor_range[i]);
         }
 
 
-        c2='R';
+        sensor_type2='R';
     }
 
     con();
@@ -1799,19 +1621,19 @@ void MainWindow::on_comboBox_23_currentIndexChanged(const QString &arg1)
              ui->comboBox_24->removeItem(0);
 
              ui->comboBox_24->addItem("2.5V");
-         c3='D';
+         sensor_type3='D';
     }
-    else if(c3=='D')
+    else if(sensor_type3=='D')
     {
         ui->comboBox_24->removeItem(0);
 
         for(int i=0;i<11;i++)
         {
-               ui->comboBox_24->addItem(v[i]);
+               ui->comboBox_24->addItem(sensor_range[i]);
         }
 
 
-        c3='R';
+        sensor_type3='R';
     }
 
     con();
@@ -1831,19 +1653,19 @@ void MainWindow::on_comboBox_21_currentIndexChanged(const QString &arg1)
              ui->comboBox_22->removeItem(0);
 
              ui->comboBox_22->addItem("2.5V");
-         c4='D';
+         sensor_type4='D';
     }
-    else if(c4=='D')
+    else if(sensor_type4=='D')
     {
         ui->comboBox_22->removeItem(0);
 
         for(int i=0;i<11;i++)
         {
-               ui->comboBox_22->addItem(v[i]);
+               ui->comboBox_22->addItem(sensor_range[i]);
         }
 
 
-        c4='R';
+        sensor_type4='R';
     }
 
     con();
@@ -1867,7 +1689,7 @@ void MainWindow::on_comboBox_8_activated(const QString &arg1)
         int i;
 
         for( i=0;i<11;i++)
-        if(v[i]==arg1)
+        if(sensor_range[i]==arg1)
             break;
         i++;
 
@@ -1894,7 +1716,7 @@ void MainWindow::on_comboBox_24_activated(const QString &arg1)
         int i;
 
         for( i=0;i<11;i++)
-        if(v[i]==arg1)
+        if(sensor_range[i]==arg1)
             break;
 
         i++;
@@ -1922,7 +1744,7 @@ void MainWindow::on_comboBox_16_activated(const QString &arg1)
         int i;
 
         for( i=0;i<11;i++)
-        if(v[i]==arg1)
+        if(sensor_range[i]==arg1)
             break;
 
         i++;
@@ -1949,7 +1771,7 @@ QString temp="Auto";
         int i;
 
         for( i=0;i<11;i++)
-        if(v[i]==arg1)
+        if(sensor_range[i]==arg1)
             break;
         i++;
 
@@ -1965,7 +1787,7 @@ QString temp="Auto";
 
 void MainWindow::on_out2mode_5_clicked()
 {
-    if(mode3==1)
+    if(output_mode3==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1988,12 +1810,12 @@ void MainWindow::on_out2mode_5_clicked()
         clo();
     }
 
-    mode3=!mode3;
+    output_mode3=!output_mode3;
 }
 
 void MainWindow::on_out2mode_4_clicked()
 {
-    if(mode4==1)
+    if(output_mode4==1)
         {
             QPixmap pixmap(":/on-off.jpg");
             QIcon ButtonIcon(pixmap);
@@ -2016,7 +1838,7 @@ void MainWindow::on_out2mode_4_clicked()
             clo();
         }
 
-        mode4=!mode4;
+        output_mode4=!output_mode4;
 }
 
 

@@ -589,37 +589,6 @@
         </rect>
        </property>
       </widget>
-      <widget class="QSpinBox" name="spinBox_3">
-       <property name="geometry">
-        <rect>
-         <x>150</x>
-         <y>460</y>
-         <width>61</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="value">
-        <number>50</number>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_38">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>460</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wait for Data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -1688,37 +1657,6 @@
        </property>
        <property name="value">
         <number>30</number>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_67">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>460</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wait for Data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-      <widget class="QSpinBox" name="spinBox_4">
-       <property name="geometry">
-        <rect>
-         <x>150</x>
-         <y>460</y>
-         <width>61</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="value">
-        <number>50</number>
        </property>
       </widget>
      </widget>

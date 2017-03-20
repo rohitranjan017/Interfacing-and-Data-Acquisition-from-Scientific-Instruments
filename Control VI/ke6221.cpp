@@ -1,6 +1,6 @@
 #include "ke6221.h"
 #include "ui_ke6221.h"
-
+#include "Scriptwrite.h"
 ke6221::ke6221(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ke6221)
