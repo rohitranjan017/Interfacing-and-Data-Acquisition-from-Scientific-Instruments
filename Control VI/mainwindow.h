@@ -5,6 +5,7 @@
 #include <ke6221.h>
 #include <ke2182a.h>
 #include <QtCharts>
+using namespace QtCharts;
 namespace Ui {
 class MainWindow;
 }
