@@ -2,8 +2,8 @@
 #define SCRIPTWRITE_H
 #include <QFile>
 #include <QTextStream>
-QFile viscript("/home/phy/ControlX/scriptwk.sh");
-void start_connection_VI()
+QFile viscript("/home/phy/ControlVI/scriptwk.sh");
+void start_connection_VI(int address=6)
 {
     //conecting code starts
    viscript.open(QIODevice::WriteOnly| QIODevice::Text);
@@ -18,7 +18,7 @@ void start_connection_VI()
    vi_out<<"\n";
    vi_out<<"send ";
    vi_out<<"\"";
-   vi_out<<"6";
+   vi_out<<QString::number(address);
    vi_out<<"\\n";
    vi_out<<"\"";
    vi_out<<"\n";
@@ -37,7 +37,7 @@ void stop_connection_VI()
     vi_out<<"interact\n";
 
     viscript.close();
-    system("script -c /home/phy/ControlX/./scriptwk.sh /home/phy/ControlX/wk.txt");
+    system("script -c /home/phy/ControlVI/./scriptwk.sh /home/phy/ControlVI/wk.txt");
 }
 void intialize_write_VI()
 { QTextStream vi_out(&viscript);

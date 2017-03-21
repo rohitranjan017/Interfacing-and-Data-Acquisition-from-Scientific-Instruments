@@ -2440,7 +2440,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>V/I</string>
+      <string>R/T</string>
      </property>
     </widget>
    </widget>
@@ -2477,7 +2477,7 @@
      <x>0</x>
      <y>0</y>
      <width>1316</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

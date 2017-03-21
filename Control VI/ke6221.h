@@ -25,9 +25,15 @@ private slots:
 
     void on_SetAmplitude_valueChanged(QString arg1);
 
-    void on_SetRange_currentIndexChanged(const QString &arg1);
+
 
     void on_SetAmplitude_valueChanged(double arg1);
+
+    void on_SetRange_currentIndexChanged(int index);
+
+    void on_RangeType_2_currentIndexChanged(int index);
+
+    void on_ok_clicked();
 
 private:
     Ui::ke6221 *ui;

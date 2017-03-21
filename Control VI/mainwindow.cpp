@@ -40,7 +40,7 @@ bool output_status,output_mode1,output_mode2,output_mode3,output_mode4,input_mod
 QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê","300kê","Auto" };
 //QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 
-QFile file("/home/phy/ControlX/script.sh");
+QFile file("/home/phy/ControlVI/script.sh");
 
 QTextStream out(&file);
 //QList <double> setpoints;
@@ -112,7 +112,7 @@ void clo(bool sig=false)
     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    system("script -c /home/phy/ControlX/./script.sh /home/phy/ControlX/ctc.txt");
+    system("script -c /home/phy/ControlVI/./script.sh /home/phy/ControlVI/ctc.txt");
 }
 void pre()
 {
@@ -134,7 +134,7 @@ void outs(QString s)
 
 void readfiles()
 {
-    QFile file("/home/phy/ControlX/wk.txt");
+    QFile file("/home/phy/ControlVI/wk.txt");
 
     vec.clear();
 
@@ -190,8 +190,8 @@ MainWindow::MainWindow(QWidget *parent) :
     chart->addAxis(axisY, Qt::AlignLeft);
     chart->setAxisX(axisX, series);
     series->attachAxis(axisY);
-   axisX->setTitleText("Voltage");
-   axisY->setTitleText("Current");
+   axisX->setTitleText("Temperature");
+   axisY->setTitleText("Resistance");
     axisY->setLabelFormat("%0.4E");
     series->setPointsVisible(true);
 
@@ -215,7 +215,7 @@ void MainWindow::conduct(int temp,int impdel)
     else
         ui->pushButton_5->setStyleSheet("background-color:green");
 
-    QFile file("/home/phy/ControlX/ctc.txt");
+    QFile file("/home/phy/ControlVI/ctc.txt");
 
 
   QString s[40];
@@ -266,13 +266,18 @@ void MainWindow::conduct(int temp,int impdel)
           ui->lcdNumber_4->display(s[1]);
 
 
-      double Avg_Rst=0;
+      double Avg_Rst=0,current;
       int i;
 //write code for 5 points
+        start_connection();
+        read_string("SOUR:CURR?");
+        stop_connection();
+        readfiles();
+        current=vec[0].toDouble();
         for(i=0;i<noof_points;i++)
         {
-            QString command="";
-            start_connection();
+            QString command="SENS:DATA:FRES?";
+            start_connection(2);
             read_string(command);
             stop_connection();
             readfiles();
@@ -280,8 +285,8 @@ void MainWindow::conduct(int temp,int impdel)
         }
 
         Avg_Rst/=i;
-        Avg_Rst/=ke6->current;
-        QFile file1("/home/phy/Desktop/"+folder_name+"/"+"V~T"+".txt");
+        Avg_Rst/=current;
+        QFile file1("/home/phy/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
@@ -344,7 +349,7 @@ void MainWindow::showtime()
     outs("In3.value?");
     outs("In4.value?");
     clo();
-    QFile file("/home/phy/ControlX/ctc.txt");
+    QFile file("/home/phy/ControlVI/ctc.txt");
     QString s[40];
     int j=0;
     file.open(QIODevice::ReadOnly);
@@ -679,14 +684,14 @@ void MainWindow::on_pushButton_2_clicked()
         while(1)
         {
             folder_name=QInputDialog::getText(this,"Folder","Enter folder name to save files");
-            QFile file("/home/phy/ControlX/fault.sh");
+            QFile file("/home/phy/ControlVI/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
             out<<"#!/bin/sh\n";
             out<<"mkdir "+folder_name<<"\n";
             file.close();
-            system("script -c /home/phy/ControlX/./fault.sh /home/phy/ControlX/bat.txt");
-            QFile file1("/home/phy/ControlX/bat.txt");
+            system("script -c /home/phy/ControlVI/./fault.sh /home/phy/ControlVI/bat.txt");
+            QFile file1("/home/phy/ControlVI/bat.txt");
             file1.open(QIODevice::ReadOnly);
             int i=0;
             while(!file1.atEnd())
@@ -712,7 +717,7 @@ void MainWindow::on_pushButton_2_clicked()
      //Write code??
 
 
-            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"R~T"+".txt");
+            QFile file1("/home/phy/"+folder_name+"/"+"R~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
@@ -799,7 +804,7 @@ void MainWindow::on_connect_clicked()
 
        clo(true);
 
-       QFile file("/home/phy/ControlX/ctc.txt");
+       QFile file("/home/phy/ControlVI/ctc.txt");
 
 
      QString s[100];

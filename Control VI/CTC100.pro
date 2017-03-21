@@ -18,8 +18,6 @@ SOURCES += main.cpp\
     ke2182a.cpp
 
 HEADERS  += mainwindow.h \
-    allfun.h \
-    allfun3.h \
     ke6221.h \
     ke2182a.h \
     Scriptwrite.h \

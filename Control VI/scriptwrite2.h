@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 
-QFile viscriptfile("/home/phy/ControlX/scriptwk.sh");
+QFile viscriptfile("/home/phy/ControlVI/scriptwk.sh");
 void start_connection()
 {
     //conecting code starts
@@ -38,7 +38,7 @@ void stop_connection()
     vi_out<<"interact\n";
 
     viscriptfile.close();
-    system("script -c /home/phy/ControlX/./scriptwk.sh /home/phy/ControlX/wk.txt");
+    system("script -c /home/phy/ControlVI/./scriptwk.sh /home/phy/ControlVI/wk.txt");
 }
 void intialize_write()
 { QTextStream vi_out(&viscriptfile);

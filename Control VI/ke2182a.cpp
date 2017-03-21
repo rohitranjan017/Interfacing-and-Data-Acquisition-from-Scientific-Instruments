@@ -18,3 +18,8 @@ void ke2182a::on_NoofPoints_valueChanged(double arg1)
 {
     total_points= (int)arg1;
 }
+
+void ke2182a::on_ok_clicked()
+{
+  //  ui->hide();
+}

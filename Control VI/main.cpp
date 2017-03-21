@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    system("/home/phy/ControlX/./start.sh");
+    system("/home/phy/ControlVI/./start.sh");
     w.showMaximized();
 
     return a.exec();

@@ -20,6 +20,8 @@ private slots:
 
     void on_NoofPoints_valueChanged(double arg1);
 
+    void on_ok_clicked();
+
 private:
     Ui::ke2182a *ui;
 };
