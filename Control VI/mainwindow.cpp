@@ -7,14 +7,16 @@
 #include <QTime>
 #include "Scriptwrite.h"
 #include <QPair>
-#include <QChart>
-#include <QtCharts/QChartView>
-#include <QtCharts/QLineSeries>
+#include <QtCharts>
+
 //#define props prop
-QT_CHARTS_USE_NAMESPACE
+#define start_connection start_connection_VI
+#define read_string read_string_VI
+#define stop_connection stop_connection_VI
+using namespace QtCharts;
 #define vec vect
 int point;
-qreal min_value,Max_value;
+qreal min_value,max_value;
 QString folder_name;
 
 void delay( int millisecondsToWait )
@@ -34,7 +36,7 @@ QVector< QString > vect;
 int noof_points;
 int firstx;
 char sensor_type1='R',sensor_type2='R',sensor_type3='R',sensor_type4='R';
-bool output_status,output_mode1,output_mode2,output_output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
+bool output_status,output_mode1,output_mode2,output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
 QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê","300kê","Auto" };
 //QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 
@@ -201,10 +203,8 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::conduct(int temp,int impdel)
 {
 
-
-
     noof_points=ke2->total_points;
-
+    //qdebug()<<noof_points;
     con();
     outs("In1.selected?"); //
     outs("In"+QString::number(temp)+".value?");
@@ -232,7 +232,6 @@ void MainWindow::conduct(int temp,int impdel)
 
                    for(uint i=0;i<qstrlen(a)-3;i++)
                     temp=temp+a[i];
-                   //qDebug()<<temp;
 
                    if(temp=="On" || temp=="Off")
                    {
@@ -246,7 +245,7 @@ void MainWindow::conduct(int temp,int impdel)
 
                             j++;
 
-                          //  qDebug()<<s[j-1];
+
 
 
                           k++;
@@ -267,46 +266,33 @@ void MainWindow::conduct(int temp,int impdel)
           ui->lcdNumber_4->display(s[1]);
 
 
-
+      double Avg_Rst=0;
+      int i;
 //write code for 5 points
+        for(i=0;i<noof_points;i++)
+        {
+            QString command="";
+            start_connection();
+            read_string(command);
+            stop_connection();
+            readfiles();
+            Avg_Rst+=vec[0].toDouble();
+        }
 
-
-
-
+        Avg_Rst/=i;
+        Avg_Rst/=ke6->current;
         QFile file1("/home/phy/Desktop/"+folder_name+"/"+"V~T"+".txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
 
 
-
-        start_connection();
-        //ui->label_2->setText("");
-        for(int j=0;j<=noof_points;j++)
-        {
-           read_string("ANA:POINT? "+QString::number(j));
-        }
-
-        stop_connection();
-        //ui->label_2->setText("Plotting...");0
-        readfiles();
-
-
-
-         out<<qSetFieldWidth(20)<<s[1];
-
-
-           //write code for file write of resistance
-
-             qApp->processEvents();
-
-                  QString cur=my[1];//change accordingly
-                  double yt=cur.toDouble();
-                  cur=s[1];
-                  double xt=cur.toDouble();
-                  qreal y=qreal(yt);
-                  qreal x=qreal(xt);
-
+         out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Rst;    // (done)write code for file write of resistance
+                      qApp->processEvents();          //change accordingly(double as said by bikash)
+                      double yt=Avg_Rst;
+                      double xt=s[1].toDouble();
+                      qreal y=qreal(yt);
+                      qreal x=qreal(xt);
 
             if(point==0)
             {
@@ -348,9 +334,6 @@ MainWindow::~MainWindow()
 void MainWindow::showtime()
 {
 
-
-
-
     con();
     outs("Out1.selected?");
     outs("Out2.selected?");
@@ -362,13 +345,11 @@ void MainWindow::showtime()
     outs("In4.value?");
     clo();
     QFile file("/home/phy/ControlX/ctc.txt");
-
-  QString s[40];
-  int j=0;
+    QString s[40];
+    int j=0;
     file.open(QIODevice::ReadOnly);
 
-
-      while (!file.atEnd())
+      while(!file.atEnd())
       {
 
                char a[1025];
@@ -417,16 +398,11 @@ void MainWindow::showtime()
               ui->lcdNumber->display(s[4]);
               double comp=s[4].toDouble();
 
-              /*if(setpoints.size()>=5)
-                  setpoints.pop_back();
-              setpoints.push_back(comp);*/
 
               if(comp>min and comp<max )
               {
-                 // ui->pushButton_3->setStyleSheet("background-color:green");
-               //   setpoints.clear();
+                  //PAUSE CODE by bikash**
 
-                  //PAUSE CODE
                   delay(ui->spinBox->value());
 
                   conduct(1,1);
@@ -434,39 +410,32 @@ void MainWindow::showtime()
                   if(final==out1_setpoint )
                   {
                       timer->stop();
-
-                       ui->pushButton_2->setStyleSheet("background-color:black");
+                      ui->pushButton_2->setStyleSheet("background-color:black");
                       con();
                       outs("OutputEnable = Off");
-
                       clo();
-
                   }
                   else
+                  {
                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                  }
 
                   ui->pushButton_3->setStyleSheet("background-color:red");
 
                   con();
                   outs("Out1.PID.Mode = On");
                   clo();
-
               }
-
           }
           else if(s[2]=="In 2")
           {
                ui->lcdNumber_2->display(s[5]);
                double comp=s[5].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
 
                if(comp>min and comp<max )
                {
-                   //ui->pushButton_3->setStyleSheet("background-color:green");
-                  // setpoints.clear();
+
              //PAUSE CODE
                   delay(ui->spinBox->value());
 
@@ -531,14 +500,10 @@ void MainWindow::showtime()
                ui->lcdNumber_4->display(s[7]);
                double comp=s[7].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
 
                if(comp>min and comp<max )
                {
-                   //ui->pushButton_3->setStyleSheet("background-color:green");
-                   //setpoints.clear();
+
              //PAUSE CODE
                    delay(ui->spinBox->value());
 
@@ -574,18 +539,14 @@ void MainWindow::showtime()
           double interval=ui->doubleSpinBox_18->value();
           if(s[3]=="In 1")
           {
-                //qDebug()<<s[4];
+
               ui->lcdNumber->display(s[4]);
               double comp=s[4].toDouble();
 
-              /*if(setpoints.size()>=5)
-                  setpoints.pop_back();
-              setpoints.push_back(comp);*/
 
               if(comp>min and comp<max )
               {
-                  //ui->pushButton_5->setStyleSheet("background-color:green");
-                  //setpoints.clear();
+
             //PAUSE CODE
                   delay(ui->spinBox_2->value());
 
@@ -615,16 +576,8 @@ void MainWindow::showtime()
           {
                ui->lcdNumber_2->display(s[5]);
                double comp=s[5].toDouble();
-
-              /* if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
-
                if(comp>min and comp<max )
                {
-                  // ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
-
              //PAUSE CODE
                    delay(final==out2_setpoint);
 
@@ -651,17 +604,12 @@ void MainWindow::showtime()
           }
           else if(s[2]=="In 3")
           {
-               ui->lcdNumber_3->display(s[6]); //qDebug()<<s[6]<<endl;
+               ui->lcdNumber_3->display(s[6]);
                double comp=s[6].toDouble();
 
-               if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);
 
               if(comp>min and comp<max )
                {
-                   //ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
 
@@ -679,8 +627,6 @@ void MainWindow::showtime()
                        ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
 
                    ui->pushButton_5->setStyleSheet("background-color:red");
-
-
                    con();
                    outs("Out2.PID.Mode = On");
                    clo();
@@ -692,14 +638,9 @@ void MainWindow::showtime()
                ui->lcdNumber_4->display(s[7]);
                double comp=s[7].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
 
                if(comp>min and comp<max )
                {
-                   //ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
              //PAUSE CODE
                    delay(ui->spinBox_2->value());
 
@@ -717,8 +658,6 @@ void MainWindow::showtime()
                         ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
 
                    ui->pushButton_5->setStyleSheet("background-color:red");
-
-
                    con();
                    outs("Out2.PID.Mode = On");
                    clo();
@@ -737,9 +676,9 @@ void MainWindow::on_pushButton_2_clicked()
     {
         QString temp;
 
-        while(1){
-
-            folder_name=QInputDialog::getText(this,"Folder","Enter Folder name");
+        while(1)
+        {
+            folder_name=QInputDialog::getText(this,"Folder","Enter folder name to save files");
             QFile file("/home/phy/ControlX/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
@@ -756,84 +695,50 @@ void MainWindow::on_pushButton_2_clicked()
 
                 file1.readLine(a,sizeof(a));
                 i++;
-
-
-
         }
-
             if(i==4)
             {
-               QMessageBox::StandardButton reply;
+              QMessageBox::StandardButton reply;
               reply=QMessageBox::question(this,"CONFIRM","Folder already exists. Do you wish to overwrite?",QMessageBox::Yes|QMessageBox::No);\
-
               if(reply==QMessageBox::Yes)
                  break;
-
             }
             else
-                break;
+            {
+              break;
+            }
+        }
+
+     //Write code??
 
 
-
-}
-
-     //Write code
-
-
-            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"V~T"+".txt");
+            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"R~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
 
             out<<qSetFieldWidth(20)<<"T(K)"<<qSetFieldWidth(20)<<"R(ohm)"<<endl;
-
-
-
-    //6 8 17 19
-
-
-
-        ui->pushButton_2->setStyleSheet("background-color:red");
-
+            ui->pushButton_2->setStyleSheet("background-color:red");
             con();
-
-
-           outs("outputEnable = on");
-
-
-           clo();
-
+            outs("outputEnable = on");
+            clo();
         QMessageBox::information(this,"OUTPUT","Ouput Enabled");
 
         ui->pushButton_3->setStyleSheet("background-color:red");
         ui->pushButton_5->setStyleSheet("background-color:red");
 
         timer->start(1000);
-
-
     }
     else
     {
             ui->pushButton_2->setStyleSheet("background-color:black");
-
             con();
-
-           outs("outputEnable = off");
-
+            outs("outputEnable = off");
             clo();
-
-             ui->pushButton_2->setStyleSheet("background-color:black");
-
             timer->stop();
-
-
-
             QMessageBox::information(this,"OUTPUT","Ouput Disabled");
     }
-
     output_status=!output_status;
-
-
 }
 
 void MainWindow::on_connect_clicked()
@@ -1101,7 +1006,7 @@ void MainWindow::on_connect_clicked()
          }
          else
          {
-             inmode2=0;
+             input_mode2=0;
             // on_out2mode_6_clicked();
          }
          ui->comboBox_15->setCurrentText(s[24]);

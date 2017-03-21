@@ -1,13 +1,14 @@
-#ifndef SCRIPTWRITE_H
-#define SCRIPTWRITE_H
+#ifndef SCRIPTWRITE2_H
+#define SCRIPTWRITE2_H
 #include <QFile>
 #include <QTextStream>
-QFile viscript("/home/phy/ControlX/scriptwk.sh");
-void start_connection_VI()
+
+QFile viscriptfile("/home/phy/ControlX/scriptwk.sh");
+void start_connection()
 {
     //conecting code starts
-   viscript.open(QIODevice::WriteOnly| QIODevice::Text);
-    QTextStream vi_out(&viscript);
+   viscriptfile.open(QIODevice::WriteOnly| QIODevice::Text);
+    QTextStream vi_out(&viscriptfile);
    vi_out<<"#!/usr/bin/expect\n";
    vi_out<<"spawn ibtest\n";
    vi_out<<"send ";
@@ -26,8 +27,8 @@ void start_connection_VI()
    //connecting code ends
 
 }
-void stop_connection_VI()
-{ QTextStream vi_out(&viscript);
+void stop_connection()
+{ QTextStream vi_out(&viscriptfile);
     vi_out<<"send ";
     vi_out<<"\"";
     vi_out<<"q";
@@ -36,11 +37,11 @@ void stop_connection_VI()
     vi_out<<"\n";
     vi_out<<"interact\n";
 
-    viscript.close();
+    viscriptfile.close();
     system("script -c /home/phy/ControlX/./scriptwk.sh /home/phy/ControlX/wk.txt");
 }
-void intialize_write_VI()
-{ QTextStream vi_out(&viscript);
+void intialize_write()
+{ QTextStream vi_out(&viscriptfile);
     vi_out<<"send ";
     vi_out<<"\"";
     vi_out<<"w";
@@ -51,24 +52,24 @@ void intialize_write_VI()
     vi_out<<"send ";
     vi_out<<"\"";
 }
-void send_enter_VI()
-{ QTextStream vi_out(&viscript);
+void send_enter()
+{ QTextStream vi_out(&viscriptfile);
     vi_out<<"\\";
     vi_out<<"n";
     vi_out<<"\"";
     vi_out<<"\n";
 }
-void send_command_VI(QString s)
-{ QTextStream vi_out(&viscript);
+void send_command(QString s)
+{ QTextStream vi_out(&viscriptfile);
 
-   intialize_write_VI();
+   intialize_write();
     vi_out<<s;
 
 }
-void read_string_VI(QString s)
-{QTextStream vi_out(&viscript);
-     send_command_VI(s);
-     send_enter_VI();
+void read_string(QString s)
+{QTextStream vi_out(&viscriptfile);
+     send_command(s);
+     send_enter();
      vi_out<<"send ";
      vi_out<<"\"";
      vi_out<<"r";
@@ -83,9 +84,9 @@ void read_string_VI(QString s)
      vi_out<<"\n";
 
 }
-void write_command_VI(QString s)
+void write_command(QString s)
 {
-    send_command_VI(s);
-    send_enter_VI();
+    send_command(s);
+    send_enter();
 }
 #endif // Scriptwritre_H

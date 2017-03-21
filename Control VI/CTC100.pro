@@ -22,7 +22,8 @@ HEADERS  += mainwindow.h \
     allfun3.h \
     ke6221.h \
     ke2182a.h \
-    Scriptwrite.h
+    Scriptwrite.h \
+    scriptwrite2.h
 
 FORMS    += mainwindow.ui \
     ke6221.ui \

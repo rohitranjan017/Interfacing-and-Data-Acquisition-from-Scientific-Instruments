@@ -13,14 +13,21 @@ class ke6221 : public QDialog
 
 public:
     explicit ke6221(QWidget *parent = 0);
+    double current;
     ~ke6221();
 
 private slots:
     void on_Output_clicked();
 
-    void on_SetFilter_2_clicked();
+    void on_SetFilter_clicked();
 
     void on_RangeType_currentIndexChanged(const QString &arg1);
+
+    void on_SetAmplitude_valueChanged(QString arg1);
+
+    void on_SetRange_currentIndexChanged(const QString &arg1);
+
+    void on_SetAmplitude_valueChanged(double arg1);
 
 private:
     Ui::ke6221 *ui;

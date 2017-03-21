@@ -5,6 +5,7 @@
 #include <ke6221.h>
 #include <ke2182a.h>
 #include <QtCharts>
+
 using namespace QtCharts;
 namespace Ui {
 class MainWindow;
@@ -16,8 +17,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-
+      ~MainWindow();
        QLineSeries *series;
 
        QChart *chart;
@@ -28,6 +28,7 @@ public:
       QValueAxis *axisY;
       ke2182a* ke2=new ke2182a;
       ke6221* ke6=new ke6221;
+
 
 public slots:
     void showtime();
