@@ -120,6 +120,9 @@
      <property name="decimals">
       <number>0</number>
      </property>
+     <property name="value">
+      <double>5.000000000000000</double>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
@@ -189,7 +192,7 @@
     <widget class="QComboBox" name="RangeType_2">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>100</x>
        <y>100</y>
        <width>51</width>
        <height>22</height>
@@ -216,9 +219,12 @@
       <rect>
        <x>20</x>
        <y>100</y>
-       <width>61</width>
+       <width>81</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="maximum">
+      <double>100000.000000000000000</double>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -237,7 +243,7 @@
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>160</x>
        <y>100</y>
        <width>67</width>
        <height>17</height>
@@ -250,17 +256,20 @@
     <widget class="QDoubleSpinBox" name="SetAmplitude_2">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>190</x>
        <y>100</y>
-       <width>61</width>
+       <width>81</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="maximum">
+      <double>100000.000000000000000</double>
      </property>
     </widget>
     <widget class="QComboBox" name="RangeType_3">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>270</x>
        <y>100</y>
        <width>51</width>
        <height>22</height>

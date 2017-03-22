@@ -35,6 +35,8 @@ private slots:
 
     void on_ok_clicked();
 
+
+
 private:
     Ui::ke6221 *ui;
 };

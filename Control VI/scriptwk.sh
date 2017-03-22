@@ -1,8 +1,10 @@
 #!/usr/bin/expect
 spawn ibtest
 send "d\n"
-send "6\n"
+send "2\n"
 send "w\n"
-send "SOUR:CURR 89.00e-6\n"
+send "SENS:DATA:FRES?\n"
+send "r\n"
+send "200\n"
 send "q\n"
 interact

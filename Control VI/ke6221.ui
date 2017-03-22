@@ -247,11 +247,14 @@
   <widget class="QDoubleSpinBox" name="SetAmplitude">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>340</x>
      <y>90</y>
-     <width>61</width>
+     <width>81</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="maximum">
+    <double>100000.000000000000000</double>
    </property>
   </widget>
   <widget class="QComboBox" name="RangeType_2">

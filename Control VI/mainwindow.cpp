@@ -22,7 +22,7 @@ QString folder_name;
 
 void delay( int millisecondsToWait )
 {
-    millisecondsToWait*=1000;
+
 
     QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
     while( QTime::currentTime() < dieTime )
@@ -170,6 +170,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+   start_connection();
+    write_command("SOUR:CURR:RANG:AUTO 1");
+    stop_connection();
+
+
     for(int i=0;i<11;i++)
     {
            ui->comboBox_8->addItem(sensor_range[i]);
@@ -291,7 +296,7 @@ void MainWindow::conduct(int temp,int impdel)
 
         Avg_Volt/=i;
         Avg_Rst=Avg_Volt/current;
-        QFile file1("/home/phy/"+folder_name+"/R~T.txt");
+        QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
@@ -301,7 +306,7 @@ void MainWindow::conduct(int temp,int impdel)
       else
           {
 
-          QFile file1("/home/phy/"+folder_name+"/R~T.txt");
+          QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
           file1.open(QIODevice::Append);
 
           QTextStream out(&file1);
@@ -316,6 +321,8 @@ void MainWindow::conduct(int temp,int impdel)
                 write_command("SOUR:CURR "+QString::number(current));
                 stop_connection();
 
+                delay(2000);
+
                 double Avg_Rstin=0;
 
                 for(int j=0;j<ke2->total_points2;j++)
@@ -328,16 +335,16 @@ void MainWindow::conduct(int temp,int impdel)
                     Avg_Volt+=vec[0].toDouble();
                 }
 
-
-                Avg_Volt/=i;
+                qApp->processEvents();
+                Avg_Volt/=ke2->total_points2;
                 Avg_Rstin=Avg_Volt/current;
 
                 Avg_Rst+=Avg_Rstin;
 
- out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;
+ out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rstin<<endl;
 
-Avg_Rst/=i;
-            }
+
+            }Avg_Rst/=ke2->sample_points;
 
           }
                       double yt=Avg_Rst;
@@ -370,9 +377,6 @@ Avg_Rst/=i;
             axisY->setRange(min_value-(max_value-min_value)/10,max_value+(max_value-min_value)/10); point++;
             axisX->setRange(firstx,x+2);
 
-
-
-        out<<endl;
 
 
 
@@ -603,6 +607,7 @@ void MainWindow::showtime()
 
                   conduct(1,2);
 
+
                   if(final==out2_setpoint )
                   {
                       timer->stop();
@@ -612,7 +617,7 @@ void MainWindow::showtime()
                       clo();
                   }
                   else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval),qDebug()<<"Re Sultan";
 
                   ui->pushButton_5->setStyleSheet("background-color:red");
 
@@ -763,7 +768,7 @@ void MainWindow::on_pushButton_2_clicked()
      //Write code??
 
 
-            QFile file1("/home/phy/"+folder_name+"/"+"R~T"+".txt");
+            QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/"+"R~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
@@ -1352,7 +1357,8 @@ void MainWindow::on_comboBox_6_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_doubleSpinBox_17_valueChanged(const QString &arg1)
 {
-        con();
+    qDebug()<<"Bhajarangi bhaijan";
+     con();
 
     outs("Out2.PID.setpoint "+arg1);
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-mkdir done
+mkdir finh7

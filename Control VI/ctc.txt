@@ -1,14 +1,25 @@
-Script started on Wednesday 22 March 2017 05:57:06 AM IST
+Script started on Thursday 23 March 2017 06:47:03 AM IST
 spawn telnet 100.10.19.37
 Trying 100.10.19.37...
 Connected to 100.10.19.37.
 Escape character is '^]'.
 
 
-Out2.PID.I 1.00
+Out1.selected?
+Out2.selected?
+Out1.PID.Input?
+Out2.PID.Input?
+In1.value?
+In2.value?
+In3.value?
+In4.value?
 Error: "ûû" is not a valid instruction
-^]^Jquit^J^]^J
-telnet> quit
-Connection closed.
-
-Script done on Wednesday 22 March 2017 05:57:07 AM IST
+Off
+On
+In 1
+In 1
+329.056
+NaN
+NaN
+NaN
+^]^Jquit^J^]^J

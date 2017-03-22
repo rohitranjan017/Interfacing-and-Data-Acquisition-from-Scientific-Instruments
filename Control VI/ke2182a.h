@@ -13,9 +13,9 @@ class ke2182a : public QDialog
 
 public:
     explicit ke2182a(QWidget *parent = 0);
-    int total_points;
-    int sample_points;
-    int total_points2;
+    int total_points=5;
+    int sample_points=5;
+    int total_points2=5;
     double lo_lmt;
     double hi_lmt;
     bool mode=0;

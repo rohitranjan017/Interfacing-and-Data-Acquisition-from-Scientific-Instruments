@@ -1,4 +1,3 @@
-Script started on Wednesday 22 March 2017 05:42:56 AM IST
-mkdir: cannot create directory ‘done’: File exists
+Script started on Thursday 23 March 2017 06:41:25 AM IST
 
-Script done on Wednesday 22 March 2017 05:42:56 AM IST
+Script done on Thursday 23 March 2017 06:41:25 AM IST

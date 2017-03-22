@@ -1,12 +1,14 @@
-Script started on Wednesday 22 March 2017 05:57:55 AM IST
+Script started on Thursday 23 March 2017 06:45:07 AM IST
 spawn ibtest
-d
-6
-w
-SOUR:CURR 89.00e-6
-q
 Do you wish to open a (d)evice or an interface (b)oard?
-	(you probably want to open a device): enter primary gpib address for device you wish to open [0-30]: trying to open pad = 6 on /dev/gpib0 ...
+	(you probably want to open a device): d
+2
+w
+SENS:DATA:FRES?
+r
+200
+q
+enter primary gpib address for device you wish to open [0-30]: trying to open pad = 2 on /dev/gpib0 ...
 You can:
 	w(a)it for an event
 	write (c)ommand bytes to bus (system controller only)
@@ -24,13 +26,39 @@ You can:
 	change (t)imeout on io operations
 	request ser(v)ice (board only)
 	(w)rite data string
-: enter a string to send to your device: sending string: SOUR:CURR 89.00e-6
+: enter a string to send to your device: sending string: SENS:DATA:FRES?
 
 gpib status is: 
 ibsta = 0x2100  < END CMPL >
 iberr= 0
 
-ibcnt = 19
+ibcnt = 16
+You can:
+	w(a)it for an event
+	write (c)ommand bytes to bus (system controller only)
+	send (d)evice clear (device only)
+	change remote (e)nable line (system controller only)
+	(g)o to standby (release ATN line, system controller only)
+	send (i)nterface clear (system controller only)
+	ta(k)e control (assert ATN line, system controller only)
+	get bus (l)ine status (board only)
+	go to local (m)ode
+	change end (o)f transmission configuration
+	(q)uit
+	(r)ead string
+	perform (s)erial poll (device only)
+	change (t)imeout on io operations
+	request ser(v)ice (board only)
+	(w)rite data string
+: enter maximum number of bytes to read [1024]: trying to read 200 bytes from device...
+received string: '+1.97246608E-01
+'
+Number of bytes read: 16
+gpib status is: 
+ibsta = 0x2100  < END CMPL >
+iberr= 0
+
+ibcnt = 16
 You can:
 	w(a)it for an event
 	write (c)ommand bytes to bus (system controller only)
@@ -49,4 +77,4 @@ You can:
 	request ser(v)ice (board only)
 	(w)rite data string
 : 
-Script done on Wednesday 22 March 2017 05:57:55 AM IST
+Script done on Thursday 23 March 2017 06:45:07 AM IST
