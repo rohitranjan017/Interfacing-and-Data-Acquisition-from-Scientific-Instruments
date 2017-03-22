@@ -75,3 +75,13 @@ void ke2182a::on_radioButton_2_clicked()
 {
     mode=1;
 }
+
+void ke2182a::on_radioButton_3_clicked()
+{
+    mode=2;
+}
+
+void ke2182a::on_NoofPoints_7_valueChanged(double arg1)
+{
+    total_points3=(int)arg1;
+}

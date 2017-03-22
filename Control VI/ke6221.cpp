@@ -81,11 +81,9 @@ ke6221::ke6221(QWidget *parent) :
         val*=100,exp=exp/3;
         else
            exp=exp/3-1;
-    qDebug()<<val;
+
     ui->RangeType_2->setCurrentIndex(exp);
     ui->SetAmplitude->setValue(val);
-
-
 
 
 }

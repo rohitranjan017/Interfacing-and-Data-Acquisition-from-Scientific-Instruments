@@ -19,7 +19,7 @@ using namespace QtCharts;
 int point;
 qreal min_value,max_value;
 QString folder_name;
-
+double cur,volt,power;
 void delay( int millisecondsToWait )
 {
 
@@ -170,10 +170,23 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-   start_connection();
+    start_connection();
     write_command("SOUR:CURR:RANG:AUTO 1");
     stop_connection();
 
+    QString command="SENS:DATA:FRES?";
+    start_connection(2);
+    read_string(command);
+    stop_connection();
+    readfiles();
+    volt=vec[0].toDouble();
+
+    start_connection();
+    read_string("SOUR:CURR?");
+    stop_connection();
+    readfiles();
+    cur=vec[0].toDouble();
+    power=cur*volt;
 
     for(int i=0;i<11;i++)
     {
@@ -303,7 +316,7 @@ void MainWindow::conduct(int temp,int impdel)
 
    out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;    // (done)write code for file write of resistance
        }
-      else
+      else if(ke2->mode==1)
           {
 
           QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
@@ -347,6 +360,41 @@ void MainWindow::conduct(int temp,int impdel)
             }Avg_Rst/=ke2->sample_points;
 
           }
+      else
+      {
+           cur=power/volt;
+
+           start_connection();
+           write_command("SOUR:CURR "+QString::number(cur));
+           stop_connection();
+
+           for(int i=0;i<ke2->total_points3;i++)
+           {
+               QString command="SENS:DATA:FRES?";
+               start_connection(2);
+               read_string(command);
+               stop_connection();
+               readfiles();
+               Avg_Volt+=vec[0].toDouble();
+           }
+
+           Avg_Volt/=ke2->total_points3;
+           Avg_Rst=Avg_Volt/cur;
+           QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
+           file1.open(QIODevice::Append);
+
+           QTextStream out(&file1);
+
+      out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<cur<<qSetFieldWidth(20)<<Avg_Rst<<endl;
+
+      volt=Avg_Volt;
+
+      }
+
+
+
+
+
                       double yt=Avg_Rst;
                       double xt=s[1].toDouble();
                       qreal y=qreal(yt);

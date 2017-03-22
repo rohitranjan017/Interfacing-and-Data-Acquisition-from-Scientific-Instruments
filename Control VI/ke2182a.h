@@ -16,9 +16,10 @@ public:
     int total_points=5;
     int sample_points=5;
     int total_points2=5;
+    int total_points3=5;
     double lo_lmt;
     double hi_lmt;
-    bool mode=0;
+    int mode=0;
     ~ke2182a();
 
 private slots:
@@ -42,6 +43,10 @@ private slots:
     void on_radioButton_clicked();
 
     void on_radioButton_2_clicked();
+
+    void on_radioButton_3_clicked();
+
+    void on_NoofPoints_7_valueChanged(double arg1);
 
 private:
     Ui::ke2182a *ui;
