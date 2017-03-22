@@ -6,6 +6,7 @@
 QVector< QString > vectke;
 QString ranges[9]={"2E-9","20E-9","200E-9","2E-6","20E-6","200E-6","2E-3","20E-3","100E-3"};
 QString units[3]={"e-3","e-6","e-9"};
+QMap<double,int> rev={{2e-9,0},{20e-9,1},{200e-9,2},{2e-6,3},{20e-6,4},{200e-6,5},{2e-3,6},{20e-3,7},{100e-3,8}};
 void readfileke()
 {
     QFile file("/home/phy/ControlVI/wk.txt");
@@ -72,7 +73,26 @@ ke6221::ke6221(QWidget *parent) :
     {
         ui->groupBox->setVisible(true);
         ui->groupBox->setEnabled(true);
+        double val=vectke[3].toDouble();
+        ui->SetRange->setCurrentIndex(rev[val]);
     }
+
+    QStringList mylist=vectke[2].split('E');
+    QString temp=mylist[0];
+    double val=temp.toDouble();
+    temp=mylist[1];
+    int exp=temp.toInt();
+
+    if(exp%3==1)
+        val*=10,exp=(-exp+1)/3;
+    else
+       if(exp%3==2)
+        val*=100,exp=(-exp+2)/3;
+
+    ui->SetAmplitude->setValue(val);
+    ui->RangeType_2->setCurrentIndex(exp-1);
+
+
 
 }
 
