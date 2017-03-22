@@ -13,6 +13,7 @@
 #define start_connection start_connection_VI
 #define read_string read_string_VI
 #define stop_connection stop_connection_VI
+#define write_command write_command_VI
 using namespace QtCharts;
 #define vec vect
 int point;
@@ -266,11 +267,11 @@ void MainWindow::conduct(int temp,int impdel)
           ui->lcdNumber_4->display(s[1]);
 
 
-      double Avg_Rst=0;
+      double Avg_Rst,Avg_Volt=0;double current;
 
       if(ke2->mode==0)
       {
-              double current;
+
       int i; noof_points=ke2->total_points;
 //write code for 5 points
         start_connection();
@@ -285,27 +286,59 @@ void MainWindow::conduct(int temp,int impdel)
             read_string(command);
             stop_connection();
             readfiles();
-            Avg_Rst+=vec[0].toDouble();
+            Avg_Volt+=vec[0].toDouble();
         }
 
-        Avg_Rst/=i;
-        Avg_Rst/=current;
+        Avg_Volt/=i;
+        Avg_Rst=Avg_Volt/current;
         QFile file1("/home/phy/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
 
-
-         out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Rst;    // (done)write code for file write of resistance
+   out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;    // (done)write code for file write of resistance
        }
       else
           {
+
+          QFile file1("/home/phy/"+folder_name+"/R~T.txt");
+          file1.open(QIODevice::Append);
+
+          QTextStream out(&file1);
+
             double interval=((ke2->hi_lmt-ke2->lo_lmt)/(ke2->sample_points-1));
 
-            for(int i=0;i<sample_points;i++)
+            for(int i=0;i<ke2->sample_points;i++)
             {
-                start_connection
+                current=ke2->lo_lmt+i*interval;
+
+                start_connection();
+                write_command("SOUR:CURR "+QString::number(current));
+                stop_connection();
+
+                double Avg_Rstin=0;
+
+                for(int j=0;j<ke2->total_points2;j++)
+                {
+                    QString command="SENS:DATA:FRES?";
+                    start_connection(2);
+                    read_string(command);
+                    stop_connection();
+                    readfiles();
+                    Avg_Volt+=vec[0].toDouble();
+                }
+
+
+                Avg_Volt/=i;
+                Avg_Rstin=Avg_Volt/current;
+
+                Avg_Rst+=Avg_Rstin;
+
+ out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;
+
+Avg_Rst/=i;
             }
+
           }
                       double yt=Avg_Rst;
                       double xt=s[1].toDouble();
@@ -735,7 +768,7 @@ void MainWindow::on_pushButton_2_clicked()
 
             QTextStream out(&file1);
 
-            out<<qSetFieldWidth(20)<<"T(K)"<<qSetFieldWidth(20)<<"R(ohm)"<<endl;
+out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSetFieldWidth(20)<<"Current(A)"<<qSetFieldWidth(20)<<"Resistance(ohm)"<<endl;
             ui->pushButton_2->setStyleSheet("background-color:red");
             con();
             outs("outputEnable = on");
