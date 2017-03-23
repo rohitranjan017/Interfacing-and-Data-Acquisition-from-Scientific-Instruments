@@ -1,2 +1,2 @@
 #!/bin/sh
-mkdir finh7
+mkdir trial

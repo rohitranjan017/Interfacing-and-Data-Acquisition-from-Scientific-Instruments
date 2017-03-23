@@ -82,6 +82,9 @@ ke6221::ke6221(QWidget *parent) :
         else
            exp=exp/3-1;
 
+    if(exp==-1)
+    exp=0;
+
     ui->RangeType_2->setCurrentIndex(exp);
     ui->SetAmplitude->setValue(val);
 

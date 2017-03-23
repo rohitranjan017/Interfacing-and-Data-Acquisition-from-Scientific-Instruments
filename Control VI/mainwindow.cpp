@@ -174,19 +174,6 @@ MainWindow::MainWindow(QWidget *parent) :
     write_command("SOUR:CURR:RANG:AUTO 1");
     stop_connection();
 
-    QString command="SENS:DATA:FRES?";
-    start_connection(2);
-    read_string(command);
-    stop_connection();
-    readfiles();
-    volt=vec[0].toDouble();
-
-    start_connection();
-    read_string("SOUR:CURR?");
-    stop_connection();
-    readfiles();
-    cur=vec[0].toDouble();
-    power=cur*volt;
 
     for(int i=0;i<11;i++)
     {
@@ -285,18 +272,21 @@ void MainWindow::conduct(int temp,int impdel)
           ui->lcdNumber_4->display(s[1]);
 
 
-      double Avg_Rst,Avg_Volt=0;double current;
+      double Avg_Rst,Avg_Volt;double current;
 
       if(ke2->mode==0)
       {
 
-      int i; noof_points=ke2->total_points;
+      int i; noof_points=ke2->total_points; double vfin=0;
 //write code for 5 points
         start_connection();
         read_string("SOUR:CURR?");
         stop_connection();
         readfiles();
         current=vec[0].toDouble();
+
+        delay(1000);
+
         for(i=0;i<noof_points;i++)
         {
             QString command="SENS:DATA:FRES?";
@@ -308,13 +298,44 @@ void MainWindow::conduct(int temp,int impdel)
         }
 
         Avg_Volt/=i;
+        vfin+=Avg_Volt;
         Avg_Rst=Avg_Volt/current;
+
+        current*=-1; Avg_Volt=0;
+
+        start_connection();
+        write_command("SOUR:CURR "+QString::number(current));
+        stop_connection();
+
+        delay(1000);
+
+        for(i=0;i<noof_points;i++)
+        {
+            QString command="SENS:DATA:FRES?";
+            start_connection(2);
+            read_string(command);
+            stop_connection();
+            readfiles();
+            Avg_Volt+=vec[0].toDouble();
+        }
+
+        Avg_Volt/=i;
+        vfin-=Avg_Volt;
+        vfin/=2;
+        Avg_Rst+=Avg_Volt/current;
+        Avg_Rst/=2;
+
+        current*=-1;
+        start_connection();
+        write_command("SOUR:CURR "+QString::number(current));
+        stop_connection();
+
         QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
 
-   out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;    // (done)write code for file write of resistance
+   out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<vfin<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rst<<endl;    // (done)write code for file write of resistance
        }
       else if(ke2->mode==1)
           {
@@ -328,45 +349,90 @@ void MainWindow::conduct(int temp,int impdel)
 
             for(int i=0;i<ke2->sample_points;i++)
             {
-                current=ke2->lo_lmt+i*interval;
+                Avg_Volt=0;
+                current=ke2->lo_lmt+i*interval; double vfin=0;
 
                 start_connection();
                 write_command("SOUR:CURR "+QString::number(current));
                 stop_connection();
 
-                delay(2000);
+                delay(1000);
+
 
                 double Avg_Rstin=0;
 
                 for(int j=0;j<ke2->total_points2;j++)
                 {
+
                     QString command="SENS:DATA:FRES?";
                     start_connection(2);
                     read_string(command);
                     stop_connection();
                     readfiles();
+
+
+
                     Avg_Volt+=vec[0].toDouble();
                 }
 
                 qApp->processEvents();
                 Avg_Volt/=ke2->total_points2;
+                vfin+=Avg_Volt;
                 Avg_Rstin=Avg_Volt/current;
-
                 Avg_Rst+=Avg_Rstin;
 
- out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rstin<<endl;
+                current*=-1;
+
+                start_connection();
+                write_command("SOUR:CURR "+QString::number(current));
+                stop_connection();
+
+                delay(1000);
 
 
-            }Avg_Rst/=ke2->sample_points;
+                 Avg_Rstin=0;
+                 Avg_Volt=0;
+
+                for(int j=0;j<ke2->total_points2;j++)
+                {
+
+                    QString command="SENS:DATA:FRES?";
+                    start_connection(2);
+                    read_string(command);
+                    stop_connection();
+                    readfiles();
+
+
+
+                    Avg_Volt+=vec[0].toDouble();
+                }
+
+                qApp->processEvents();
+                Avg_Volt/=ke2->total_points2;
+                vfin-=Avg_Volt;
+                vfin/=2;
+                Avg_Rstin=Avg_Volt/current;
+                Avg_Rst+=Avg_Rstin;
+
+
+                current*=-1;
+
+ out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<vfin<<qSetFieldWidth(20)<<current<<qSetFieldWidth(20)<<Avg_Rstin<<endl;
+
+
+            }Avg_Rst/=2*ke2->sample_points;
 
           }
       else
       {
-           cur=power/volt;
+           cur=power/volt; double fin=0;
 
            start_connection();
            write_command("SOUR:CURR "+QString::number(cur));
            stop_connection();
+
+           delay(1000);
+           Avg_Volt=0;
 
            for(int i=0;i<ke2->total_points3;i++)
            {
@@ -379,15 +445,44 @@ void MainWindow::conduct(int temp,int impdel)
            }
 
            Avg_Volt/=ke2->total_points3;
+           fin+=Avg_Volt;
            Avg_Rst=Avg_Volt/cur;
+
+           cur*=-1;
+
+           start_connection();
+           write_command("SOUR:CURR "+QString::number(cur));
+           stop_connection();
+
+           delay(1000);
+           Avg_Volt=0;
+
+           for(int i=0;i<ke2->total_points3;i++)
+           {
+               QString command="SENS:DATA:FRES?";
+               start_connection(2);
+               read_string(command);
+               stop_connection();
+               readfiles();
+               Avg_Volt+=vec[0].toDouble();
+           }
+
+           Avg_Volt/=ke2->total_points3;
+           Avg_Rst+=Avg_Volt/cur;
+           Avg_Rst/=2;
+           fin-=Avg_Volt;
+           fin/=2;
+
            QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
            file1.open(QIODevice::Append);
 
            QTextStream out(&file1);
 
-      out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<Avg_Volt<<qSetFieldWidth(20)<<cur<<qSetFieldWidth(20)<<Avg_Rst<<endl;
 
-      volt=Avg_Volt;
+
+      out<<qSetFieldWidth(20)<<s[1]<<qSetFieldWidth(20)<<fin<<qSetFieldWidth(20)<<-cur<<qSetFieldWidth(20)<<Avg_Rst<<endl;
+
+      volt=fin;
 
       }
 
@@ -830,6 +925,25 @@ out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSe
 
         ui->pushButton_3->setStyleSheet("background-color:red");
         ui->pushButton_5->setStyleSheet("background-color:red");
+
+
+        start_connection();
+        write_command("SOUR:CURR:RANG:AUTO 1");
+        stop_connection();
+
+        QString command="SENS:DATA:FRES?";
+        start_connection(2);
+        read_string(command);
+        stop_connection();
+        readfiles();
+        volt=vec[0].toDouble();
+
+        start_connection();
+        read_string("SOUR:CURR?");
+        stop_connection();
+        readfiles();
+        cur=vec[0].toDouble();
+        power=cur*volt;
 
         timer->start(1000);
     }
