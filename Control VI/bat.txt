@@ -1,3 +1,5 @@
-Script started on Friday 24 March 2017 06:37:48 AM IST
+Script started on Saturday 25 March 2017 03:05:59 AM IST
+mkdir: missing operand
+Try 'mkdir --help' for more information.
 
-Script done on Friday 24 March 2017 06:37:48 AM IST
+Script done on Saturday 25 March 2017 03:05:59 AM IST

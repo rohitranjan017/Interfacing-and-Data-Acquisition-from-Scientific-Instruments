@@ -70,11 +70,16 @@ double calc(int points)
         voltages.push_back(cur);
     }
 
+    QFile decr("buggy.txt");
+
+    decr.open(QIODevice::Append);
+    QTextStream obj(&decr);
+
     Avg_Volt=sum/points;
 
     auto mm = std::minmax_element(voltages.begin(), voltages.end());
 
-    while(((*mm.second)-(*mm.first))>Avg_Volt/10)
+    while(((*mm.second)-(*mm.first))>std::abs(Avg_Volt/10))
     {
         QString command="SENS:DATA:FRES?";
         start_connection(2);
@@ -87,10 +92,13 @@ double calc(int points)
         voltages.push_back(cur);
         Avg_Volt=sum/points;
 
+     obj<<cur<<" "<<Avg_Volt<<" "<<(*mm.second)<<" "<<(*mm.first)<<endl;
+
         mm = std::minmax_element(voltages.begin(), voltages.end());
     }
 
     return Avg_Volt;
+    obj<<"--------------------------------------------------------";
 
 }
 
@@ -849,7 +857,10 @@ void MainWindow::on_pushButton_2_clicked()
 
         while(1)
         {
-            folder_name=QInputDialog::getText(this,"Folder","Enter folder name to save files");
+            bool ok=false;
+            folder_name=QInputDialog::getText(this,"Folder","Enter folder name to save files",QLineEdit::Normal,"PHY ",&ok);
+            if(ok==false)
+                return;
             QFile file("/home/phy/ControlVI/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
@@ -873,6 +884,16 @@ void MainWindow::on_pushButton_2_clicked()
               reply=QMessageBox::question(this,"CONFIRM","Folder already exists. Do you wish to overwrite?",QMessageBox::Yes|QMessageBox::No);\
               if(reply==QMessageBox::Yes)
                  break;
+
+            }
+           else
+            if(i==5)
+            {
+                QMessageBox::StandardButton reply;
+                reply=QMessageBox::warning(this,"WARNING!!!","Folder name can not be empty",QMessageBox::Ok);
+                if(reply==QMessageBox::Ok)
+                    return;
+
             }
             else
             {
@@ -916,6 +937,13 @@ out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSe
         readfiles();
         cur=vec[0].toDouble();
         power=cur*volt;
+
+
+        start_connection();
+        write_command("OUTP 1");
+        stop_connection();
+        point=0;
+        series->clear();
 
         timer->start(1000);
     }

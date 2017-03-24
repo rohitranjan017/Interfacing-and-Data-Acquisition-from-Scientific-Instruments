@@ -50,6 +50,7 @@ ke6221::ke6221(QWidget *parent) :
     read_string("OUTP?");
     read_string("SOUR:CURR:FILT?");
     read_string("SOUR:CURR?");
+    read_string("SOUR:CURR:COMP?");
     stop_connection();
 
     readfileke();
@@ -88,6 +89,7 @@ ke6221::ke6221(QWidget *parent) :
     ui->RangeType_2->setCurrentIndex(exp);
     ui->SetAmplitude->setValue(val);
 
+    ui->SetCompliance->setValue(vectke[3].toDouble());
 
 }
 
@@ -216,3 +218,16 @@ void ke6221::on_ok_clicked()
 }
 
 
+
+void ke6221::on_SetCompliance_valueChanged(double arg1)
+{
+    command="SOUR:CURR:COMP "+QString::number(arg1);     // Command to set amplitude
+    start_connection();
+    write_command(command);
+    stop_connection();
+}
+
+void ke6221::on_buttonBox_accepted()
+{
+    hide();
+}

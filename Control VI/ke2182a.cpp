@@ -21,7 +21,7 @@ void ke2182a::on_NoofPoints_valueChanged(double arg1)
 
 void ke2182a::on_ok_clicked()
 {
-  //  ui->hide();
+  hide();
 }
 
 void ke2182a::on_NoofPoints_2_valueChanged(double arg1)

@@ -37,6 +37,10 @@ private slots:
 
 
 
+    void on_SetCompliance_valueChanged(double arg1);
+
+    void on_buttonBox_accepted();
+
 private:
     Ui::ke6221 *ui;
 };
