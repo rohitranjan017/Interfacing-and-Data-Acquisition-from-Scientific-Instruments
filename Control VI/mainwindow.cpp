@@ -20,6 +20,80 @@ int point;
 qreal min_value,max_value;
 QString folder_name;
 double cur,volt,power;
+QVector< QString > vect;
+void readfiles()
+{
+    QFile file("/home/phy/ControlVI/wk.txt");
+
+    vec.clear();
+
+    file.open(QIODevice::ReadOnly);
+
+    while(!file.atEnd())
+    {
+        char a[1025];
+
+            file.readLine(a,sizeof(a));
+
+            if(a[0]=='r' and a[1]=='e')
+            {
+                QString temp;
+
+                int x=strlen(a);
+
+                for(int i=18;i<x-2;i++)
+                {
+                    temp=temp+a[i];
+
+                }
+
+                    vec.push_back(temp);
+            }
+    }
+}
+
+double calc(int points)
+{
+    double Avg_Volt,cur,sum=0;
+
+    QList<double> voltages;
+
+    for(int i=0;i<points;i++)
+    {
+        QString command="SENS:DATA:FRES?";
+        start_connection(2);
+        read_string(command);
+        stop_connection();
+        readfiles();
+        cur=vec[0].toDouble();
+        sum+=cur;
+        voltages.push_back(cur);
+    }
+
+    Avg_Volt=sum/points;
+
+    auto mm = std::minmax_element(voltages.begin(), voltages.end());
+
+    while(((*mm.second)-(*mm.first))>Avg_Volt/10)
+    {
+        QString command="SENS:DATA:FRES?";
+        start_connection(2);
+        read_string(command);
+        stop_connection();
+        readfiles();
+        cur=vec[0].toDouble();
+        sum=sum+cur-voltages.front();
+        voltages.pop_front();
+        voltages.push_back(cur);
+        Avg_Volt=sum/points;
+
+        mm = std::minmax_element(voltages.begin(), voltages.end());
+    }
+
+    return Avg_Volt;
+
+}
+
 void delay( int millisecondsToWait )
 {
 
@@ -31,7 +105,7 @@ void delay( int millisecondsToWait )
     }
 }
 
-QVector< QString > vect;
+
 //QVector <QPointF > points;
 
 int noof_points;
@@ -133,36 +207,7 @@ void outs(QString s)
     post();
 }
 
-void readfiles()
-{
-    QFile file("/home/phy/ControlVI/wk.txt");
 
-    vec.clear();
-
-    file.open(QIODevice::ReadOnly);
-
-    while(!file.atEnd())
-    {
-        char a[1025];
-
-            file.readLine(a,sizeof(a));
-
-            if(a[0]=='r' and a[1]=='e')
-            {
-                QString temp;
-
-                int x=strlen(a);
-
-                for(int i=18;i<x-2;i++)
-                {
-                    temp=temp+a[i];
-
-                }
-
-                    vec.push_back(temp);
-            }
-    }
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -277,7 +322,7 @@ void MainWindow::conduct(int temp,int impdel)
       if(ke2->mode==0)
       {
 
-      int i; noof_points=ke2->total_points; double vfin=0;
+       noof_points=ke2->total_points; double vfin=0;
 //write code for 5 points
         start_connection();
         read_string("SOUR:CURR?");
@@ -285,19 +330,7 @@ void MainWindow::conduct(int temp,int impdel)
         readfiles();
         current=vec[0].toDouble();
 
-        delay(1000);
-
-        for(i=0;i<noof_points;i++)
-        {
-            QString command="SENS:DATA:FRES?";
-            start_connection(2);
-            read_string(command);
-            stop_connection();
-            readfiles();
-            Avg_Volt+=vec[0].toDouble();
-        }
-
-        Avg_Volt/=i;
+        Avg_Volt=calc(noof_points);
         vfin+=Avg_Volt;
         Avg_Rst=Avg_Volt/current;
 
@@ -307,19 +340,8 @@ void MainWindow::conduct(int temp,int impdel)
         write_command("SOUR:CURR "+QString::number(current));
         stop_connection();
 
-        delay(1000);
+        Avg_Volt=calc(noof_points);
 
-        for(i=0;i<noof_points;i++)
-        {
-            QString command="SENS:DATA:FRES?";
-            start_connection(2);
-            read_string(command);
-            stop_connection();
-            readfiles();
-            Avg_Volt+=vec[0].toDouble();
-        }
-
-        Avg_Volt/=i;
         vfin-=Avg_Volt;
         vfin/=2;
         Avg_Rst+=Avg_Volt/current;
@@ -361,22 +383,10 @@ void MainWindow::conduct(int temp,int impdel)
 
                 double Avg_Rstin=0;
 
-                for(int j=0;j<ke2->total_points2;j++)
-                {
-
-                    QString command="SENS:DATA:FRES?";
-                    start_connection(2);
-                    read_string(command);
-                    stop_connection();
-                    readfiles();
-
-
-
-                    Avg_Volt+=vec[0].toDouble();
-                }
-
                 qApp->processEvents();
-                Avg_Volt/=ke2->total_points2;
+
+                Avg_Volt=calc(ke2->total_points2);
+
                 vfin+=Avg_Volt;
                 Avg_Rstin=Avg_Volt/current;
                 Avg_Rst+=Avg_Rstin;
@@ -387,28 +397,14 @@ void MainWindow::conduct(int temp,int impdel)
                 write_command("SOUR:CURR "+QString::number(current));
                 stop_connection();
 
-                delay(1000);
-
 
                  Avg_Rstin=0;
                  Avg_Volt=0;
 
-                for(int j=0;j<ke2->total_points2;j++)
-                {
-
-                    QString command="SENS:DATA:FRES?";
-                    start_connection(2);
-                    read_string(command);
-                    stop_connection();
-                    readfiles();
-
-
-
-                    Avg_Volt+=vec[0].toDouble();
-                }
-
                 qApp->processEvents();
-                Avg_Volt/=ke2->total_points2;
+
+                Avg_Volt=calc(ke2->total_points2);
+
                 vfin-=Avg_Volt;
                 vfin/=2;
                 Avg_Rstin=Avg_Volt/current;
@@ -431,20 +427,8 @@ void MainWindow::conduct(int temp,int impdel)
            write_command("SOUR:CURR "+QString::number(cur));
            stop_connection();
 
-           delay(1000);
-           Avg_Volt=0;
+           Avg_Volt=calc(ke2->total_points3);
 
-           for(int i=0;i<ke2->total_points3;i++)
-           {
-               QString command="SENS:DATA:FRES?";
-               start_connection(2);
-               read_string(command);
-               stop_connection();
-               readfiles();
-               Avg_Volt+=vec[0].toDouble();
-           }
-
-           Avg_Volt/=ke2->total_points3;
            fin+=Avg_Volt;
            Avg_Rst=Avg_Volt/cur;
 
@@ -454,20 +438,8 @@ void MainWindow::conduct(int temp,int impdel)
            write_command("SOUR:CURR "+QString::number(cur));
            stop_connection();
 
-           delay(1000);
-           Avg_Volt=0;
+           Avg_Volt=calc(ke2->total_points3);
 
-           for(int i=0;i<ke2->total_points3;i++)
-           {
-               QString command="SENS:DATA:FRES?";
-               start_connection(2);
-               read_string(command);
-               stop_connection();
-               readfiles();
-               Avg_Volt+=vec[0].toDouble();
-           }
-
-           Avg_Volt/=ke2->total_points3;
            Avg_Rst+=Avg_Volt/cur;
            Avg_Rst/=2;
            fin-=Avg_Volt;
