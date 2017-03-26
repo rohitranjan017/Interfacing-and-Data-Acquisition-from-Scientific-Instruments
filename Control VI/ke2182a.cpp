@@ -19,10 +19,7 @@ void ke2182a::on_NoofPoints_valueChanged(double arg1)
     total_points= (int)arg1;
 }
 
-void ke2182a::on_ok_clicked()
-{
-  hide();
-}
+
 
 void ke2182a::on_NoofPoints_2_valueChanged(double arg1)
 {
@@ -84,4 +81,9 @@ void ke2182a::on_radioButton_3_clicked()
 void ke2182a::on_NoofPoints_7_valueChanged(double arg1)
 {
     total_points3=(int)arg1;
+}
+
+void ke2182a::on_pushButton_clicked()
+{
+    hide();
 }

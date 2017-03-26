@@ -26,7 +26,6 @@ private slots:
 
     void on_NoofPoints_valueChanged(double arg1);
 
-    void on_ok_clicked();
 
     void on_NoofPoints_2_valueChanged(double arg1);
 
@@ -47,6 +46,8 @@ private slots:
     void on_radioButton_3_clicked();
 
     void on_NoofPoints_7_valueChanged(double arg1);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::ke2182a *ui;

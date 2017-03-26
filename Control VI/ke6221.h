@@ -33,7 +33,6 @@ private slots:
 
     void on_RangeType_2_currentIndexChanged(int index);
 
-    void on_ok_clicked();
 
 
 

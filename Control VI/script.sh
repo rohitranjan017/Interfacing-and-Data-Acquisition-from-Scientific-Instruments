@@ -3,7 +3,7 @@ spawn telnet 100.10.19.37
 sleep 0.2
 send "\n"
 send "\n"
-send "outputEnable = off\n"
+send "Out2.PID.Mode = On\n"
 sleep 0.2
 send "\x1D\n"
 send "quit\n"

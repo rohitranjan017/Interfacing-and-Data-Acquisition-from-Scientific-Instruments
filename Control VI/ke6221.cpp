@@ -212,13 +212,6 @@ void ke6221::on_RangeType_2_currentIndexChanged(int index)
     stop_connection();
 }
 
-void ke6221::on_ok_clicked()
-{
-    //ui->hide();
-}
-
-
-
 void ke6221::on_SetCompliance_valueChanged(double arg1)
 {
     command="SOUR:CURR:COMP "+QString::number(arg1);     // Command to set amplitude

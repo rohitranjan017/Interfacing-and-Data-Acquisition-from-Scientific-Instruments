@@ -70,10 +70,6 @@ double calc(int points)
         voltages.push_back(cur);
     }
 
-    QFile decr("buggy.txt");
-
-    decr.open(QIODevice::Append);
-    QTextStream obj(&decr);
 
     Avg_Volt=sum/points;
 
@@ -92,20 +88,19 @@ double calc(int points)
         voltages.push_back(cur);
         Avg_Volt=sum/points;
 
-     obj<<cur<<" "<<Avg_Volt<<" "<<(*mm.second)<<" "<<(*mm.first)<<endl;
+
 
         mm = std::minmax_element(voltages.begin(), voltages.end());
     }
 
     return Avg_Volt;
-    obj<<"--------------------------------------------------------";
 
 }
 
 void delay( int millisecondsToWait )
 {
 
-
+    millisecondsToWait*=1000;
     QTime dieTime = QTime::currentTime().addMSecs( millisecondsToWait );
     while( QTime::currentTime() < dieTime )
     {
@@ -119,7 +114,7 @@ void delay( int millisecondsToWait )
 int noof_points;
 int firstx;
 char sensor_type1='R',sensor_type2='R',sensor_type3='R',sensor_type4='R';
-bool output_status,output_mode1,output_mode2,output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
+bool output_status,output_mode1,output_mode2=0,output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
 QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê","300kê","Auto" };
 //QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 
@@ -360,7 +355,7 @@ void MainWindow::conduct(int temp,int impdel)
         write_command("SOUR:CURR "+QString::number(current));
         stop_connection();
 
-        QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
+        QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
@@ -370,7 +365,7 @@ void MainWindow::conduct(int temp,int impdel)
       else if(ke2->mode==1)
           {
 
-          QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
+          QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
           file1.open(QIODevice::Append);
 
           QTextStream out(&file1);
@@ -453,7 +448,7 @@ void MainWindow::conduct(int temp,int impdel)
            fin-=Avg_Volt;
            fin/=2;
 
-           QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/R~T.txt");
+           QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
            file1.open(QIODevice::Append);
 
            QTextStream out(&file1);
@@ -592,6 +587,7 @@ void MainWindow::showtime()
                       con();
                       outs("OutputEnable = Off");
                       clo();
+                      output_status=!output_status;
                   }
                   else
                   {
@@ -627,6 +623,7 @@ void MainWindow::showtime()
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        output_status=!output_status;
                    }
                    else
                        ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
@@ -694,6 +691,7 @@ void MainWindow::showtime()
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        output_status=!output_status;
                    }
                    else
                        ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
@@ -738,6 +736,7 @@ void MainWindow::showtime()
                       con();
                       outs("OutputEnable = Off");
                       clo();
+                       output_status=!output_status;
                   }
                   else
                        ui->doubleSpinBox_17->setValue(out2_setpoint+interval),qDebug()<<"Re Sultan";
@@ -801,6 +800,7 @@ void MainWindow::showtime()
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        output_status=!output_status;
                    }
                    else
                        ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
@@ -832,6 +832,7 @@ void MainWindow::showtime()
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        output_status=!output_status;
                    }
                    else
                         ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
@@ -904,7 +905,7 @@ void MainWindow::on_pushButton_2_clicked()
      //Write code??
 
 
-            QFile file1("/home/phy/build-CTC100-Desktop_Qt_5_8_0_GCC_64bit-Debug/"+folder_name+"/"+"R~T"+".txt");
+            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"R~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
@@ -1089,7 +1090,7 @@ void MainWindow::on_connect_clicked()
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_5->setIcon(ButtonIcon);
-             ui->out2mode_5->setIconSize(QSize(61,31));
+             ui->out2mode_5->setIconSize(QSize(51,21));
              //on_out2mode_5_clicked();
          }
          else
@@ -1144,7 +1145,7 @@ void MainWindow::on_connect_clicked()
              QPixmap pixmap(":/on.jpg");
              QIcon ButtonIcon(pixmap);
              ui->out2mode_4->setIcon(ButtonIcon);
-             ui->out2mode_4->setIconSize(QSize(61,31));
+             ui->out2mode_4->setIconSize(QSize(51,21));
              //on_out2mode_4_clicked();
          }
          else
@@ -1327,7 +1328,9 @@ void MainWindow::on_connect_clicked()
 
 void MainWindow::on_out1mode_clicked()
 {
-    if(output_mode1==0)
+
+    qDebug()<<"CHINDI PELU"<<endl;
+    if(output_mode1==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1447,7 +1450,13 @@ void MainWindow::on_doubleSpinBox_13_valueChanged(const QString &arg1)
 
 void MainWindow::on_out2mode_clicked()
 {
-    if(output_mode2==0)
+    QFile decr("bggy.txt");
+
+    decr.open(QIODevice::Append);
+    QTextStream obj(&decr);
+    obj<<output_mode2<<" ";
+    qDebug()<<output_mode2<<" ";
+    if(output_mode2==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1471,6 +1480,9 @@ void MainWindow::on_out2mode_clicked()
     }
 
     output_mode2=!output_mode2;
+qDebug()<<output_mode2<<endl;
+    obj<<output_mode2<<" "<<endl;
+    decr.close();
 }
 
 void MainWindow::on_comboBox_5_currentIndexChanged(const QString &arg1)
@@ -1916,7 +1928,7 @@ void MainWindow::on_out2mode_5_clicked()
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_5->setIcon(ButtonIcon);
-        ui->out2mode_5->setIconSize(QSize(61,31));
+        ui->out2mode_5->setIconSize(QSize(51,21));
 
        con();
        outs("Out1.PID.Mode = off");
@@ -1927,7 +1939,7 @@ void MainWindow::on_out2mode_5_clicked()
         QPixmap pixmap(":/on.jpg");
         QIcon ButtonIcon(pixmap);
         ui->out2mode_5->setIcon(ButtonIcon);
-        ui->out2mode_5->setIconSize(QSize(61,31));
+        ui->out2mode_5->setIconSize(QSize(51,21));
 
         con();
         outs("Out1.PID.Mode = on");
@@ -1939,12 +1951,15 @@ void MainWindow::on_out2mode_5_clicked()
 
 void MainWindow::on_out2mode_4_clicked()
 {
+
+    qDebug()<<"CHINDI PELU";
+
     if(output_mode4==1)
         {
             QPixmap pixmap(":/on-off.jpg");
             QIcon ButtonIcon(pixmap);
             ui->out2mode_4->setIcon(ButtonIcon);
-            ui->out2mode_4->setIconSize(QSize(61,31));
+            ui->out2mode_4->setIconSize(QSize(51,21));
 
            con();
            outs("Out1.PID.Mode = off");
@@ -1955,7 +1970,7 @@ void MainWindow::on_out2mode_4_clicked()
             QPixmap pixmap(":/on.jpg");
             QIcon ButtonIcon(pixmap);
             ui->out2mode_4->setIcon(ButtonIcon);
-            ui->out2mode_4->setIconSize(QSize(61,31));
+            ui->out2mode_4->setIconSize(QSize(51,21));
 
             con();
             outs("Out1.PID.Mode = on");
