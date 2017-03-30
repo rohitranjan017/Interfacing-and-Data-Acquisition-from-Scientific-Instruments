@@ -21,6 +21,41 @@ qreal min_value,max_value;
 QString folder_name;
 double cur,volt,power;
 QVector< QString > vect;
+QList<double> curtemp;
+int datapoints;
+
+bool MainWindow::checkset(int out)
+{
+    if((out==1 and curtemp.size()==datapoints) or (out==2 and curtemp.size()==datapoints) )
+    {
+        auto mm = std::minmax_element(curtemp.begin(), curtemp.end());
+        curtemp.pop_front();
+        QFile fit("bugy.txt");
+        fit.open(QIODevice::Append);
+        QTextStream foo(&fit);
+
+        foo<<*mm.second-*mm.first<<endl;
+
+        if(out==1)
+        {
+            if(*mm.second-*mm.first<=ui->doubleSpinBox_25->value())
+                return true;
+            else
+                return false;
+
+        }
+        else
+        {
+            if(*mm.second-*mm.first<ui->accuracy2->value())
+                return true;
+            else
+                return false;
+        }
+    }
+    else
+        return false;
+}
+
 void readfiles()
 {
     QFile file("/home/phy/ControlVI/wk.txt");
@@ -121,9 +156,9 @@ QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10
 QFile file("/home/phy/ControlVI/script.sh");
 
 QTextStream out(&file);
-//QList <double> setpoints;
+//QList <double> curtemp;
 
-void con(bool sig=false)
+void con()
 {
     //conecting code starts
 
@@ -131,10 +166,10 @@ void con(bool sig=false)
 
    out<<"#!/usr/bin/expect\n";
    out<<"spawn telnet 100.10.19.37\n";
-   if(sig==true)
+   /*if(sig==true)
        out<<"sleep 0.55\n";
    else
-   out<<"sleep 0.2\n";
+   out<<"sleep 0.2\n";*/
    out<<"send ";
    out<<"\"";
    out<<"\\n";
@@ -147,16 +182,16 @@ void con(bool sig=false)
    out<<"\n";
    //connecting code ends
 }
-void clo(bool sig=false)
+void clo()
 {
 
     //connection terminating code starts//
 
-    if(sig==true)
-        out<<"sleep 0.55\n";
-    else
-    out<<"sleep 0.2\n";
-    out<<"send ";
+    //if(sig==true)
+      //  out<<"sleep 0.55\n";
+    //else
+    //out<<"sleep 0.2\n";
+   /* out<<"send ";
     out<<"\"";
     out<<"\\";
     out<<"x1D";
@@ -180,17 +215,18 @@ void clo(bool sig=false)
     out<<"\"";
     out<<"telnet> ";
     out<<"\"";
-    out<<"\n";
+    out<<"\n";*/
     out<<"send ";
-    out<<"\"quit";
+    out<<"\"system.other.reset Ports";
     out<<"\\n";
     out<<"\"";
     out<<"\n";
 
-    out<<"interact\n";
+   // out<<"system.other.reset Ports\n";
+     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    system("script -c /home/phy/ControlVI/./script.sh /home/phy/ControlVI/ctc.txt");
+   system("script -c /home/phy/ControlVI/./script.sh /home/phy/ControlVI/ctc.txt");
 }
 void pre()
 {
@@ -238,14 +274,14 @@ MainWindow::MainWindow(QWidget *parent) :
     chart = new QChart();
     axisX = new QValueAxis();
     axisY = new QValueAxis();
-    series->setName("V~I");
+    series->setName("R~T");
     series->setPointsVisible(true);
     chart->addSeries(series);
     chart->addAxis(axisY, Qt::AlignLeft);
     chart->setAxisX(axisX, series);
     series->attachAxis(axisY);
-   axisX->setTitleText("Temperature");
-   axisY->setTitleText("Resistance");
+   axisX->setTitleText("Temperature (K)");
+   axisY->setTitleText("Resistance (Ω)");
     axisY->setLabelFormat("%0.4E");
     series->setPointsVisible(true);
 
@@ -264,10 +300,10 @@ void MainWindow::conduct(int temp,int impdel)
     outs("In"+QString::number(temp)+".value?");
     clo();
 
-    if(impdel==1)
+    /*if(impdel==1)
         ui->pushButton_3->setStyleSheet("background-color:green");
     else
-        ui->pushButton_5->setStyleSheet("background-color:green");
+        ui->pushButton_5->setStyleSheet("background-color:green");*/
 
     QFile file("/home/phy/ControlVI/ctc.txt");
 
@@ -284,7 +320,7 @@ void MainWindow::conduct(int temp,int impdel)
 
                    QString temp;
 
-                   for(uint i=0;i<qstrlen(a)-3;i++)
+                   for(int i=0;i<int(qstrlen(a))-2;i++)
                     temp=temp+a[i];
 
                    if(temp=="On" || temp=="Off")
@@ -294,13 +330,13 @@ void MainWindow::conduct(int temp,int impdel)
                       while(k<2)
                       {
                              file.readLine(a,sizeof(a));
-                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              for(int i=0;i<int(qstrlen(a))-2;i++)
                               s[j]=s[j]+a[i];
 
                             j++;
 
 
-
+                            qDebug()<<s[j]<<endl;
 
                           k++;
                       }
@@ -355,7 +391,7 @@ void MainWindow::conduct(int temp,int impdel)
         write_command("SOUR:CURR "+QString::number(current));
         stop_connection();
 
-        QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
+        QFile file1("/home/phy/Desktop/ControlVI_Data/"+folder_name+"/R~T.txt");
         file1.open(QIODevice::Append);
 
         QTextStream out(&file1);
@@ -365,7 +401,7 @@ void MainWindow::conduct(int temp,int impdel)
       else if(ke2->mode==1)
           {
 
-          QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
+          QFile file1("/home/phy/Desktop/ControlVI_Data/"+folder_name+"/R~T.txt");
           file1.open(QIODevice::Append);
 
           QTextStream out(&file1);
@@ -448,7 +484,7 @@ void MainWindow::conduct(int temp,int impdel)
            fin-=Avg_Volt;
            fin/=2;
 
-           QFile file1("/home/phy/Desktop/"+folder_name+"/R~T.txt");
+           QFile file1("/home/phy/Desktop/ControlVI_Data/"+folder_name+"/R~T.txt");
            file1.open(QIODevice::Append);
 
            QTextStream out(&file1);
@@ -531,7 +567,7 @@ void MainWindow::showtime()
 
                    QString temp;
 
-                   for(uint i=0;i<qstrlen(a)-3;i++)
+                   for(int i=0;i<int(qstrlen(a))-2;i++)
                     temp=temp+a[i];
                    //qDebug()<<temp;
 
@@ -542,7 +578,7 @@ void MainWindow::showtime()
                       while(k<8)
                       {
                              file.readLine(a,sizeof(a));
-                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              for(int i=0;i<int(qstrlen(a))-2;i++)
                               s[j]=s[j]+a[i];
 
                             j++;
@@ -557,12 +593,15 @@ void MainWindow::showtime()
                    }
 
       }
+
+
+
       if(s[0]=="On")        //Output1 on or off
       {
-          double out1_setpoint=ui->doubleSpinBox_6->value();
+          powtab->setpoint=ui->doubleSpinBox_6->value();
           double out1_tol=ui->doubleSpinBox_25->value();
-          double max=out1_setpoint+out1_tol;
-          double min=out1_setpoint-out1_tol;
+          double max=powtab->setpoint+out1_tol;
+          double min=powtab->setpoint-out1_tol;
           double final=ui->doubleSpinBox_8->value();
           double interval=ui->doubleSpinBox_7->value();
           if(s[2]=="In 1")
@@ -576,11 +615,14 @@ void MainWindow::showtime()
               {
                   //PAUSE CODE by bikash**
 
+
+                  ui->pushButton_3->setStyleSheet("background-color:green");
+
                   delay(ui->spinBox->value());
 
                   conduct(1,1);
 
-                  if(final==out1_setpoint )
+                  if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                   {
                       timer->stop();
                       ui->pushButton_2->setStyleSheet("background-color:black");
@@ -591,7 +633,7 @@ void MainWindow::showtime()
                   }
                   else
                   {
-                      ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                      ui->doubleSpinBox_6->setValue(powtab->setpoint+interval);
                   }
 
                   ui->pushButton_3->setStyleSheet("background-color:red");
@@ -611,11 +653,12 @@ void MainWindow::showtime()
                {
 
              //PAUSE CODE
+                   ui->pushButton_3->setStyleSheet("background-color:green");
                   delay(ui->spinBox->value());
 
                  conduct(2,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                    {
                        timer->stop();
 
@@ -626,7 +669,7 @@ void MainWindow::showtime()
                         output_status=!output_status;
                    }
                    else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                       ui->doubleSpinBox_6->setValue(powtab->setpoint+interval);
 
                    ui->pushButton_3->setStyleSheet("background-color:red");
 
@@ -646,11 +689,12 @@ void MainWindow::showtime()
                if(comp>min and comp<max )
                {
 
+                   ui->pushButton_3->setStyleSheet("background-color:green");
                   delay(ui->spinBox->value());
 
                   conduct(3,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
@@ -659,7 +703,7 @@ void MainWindow::showtime()
                        clo();
                    }
                     else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                       ui->doubleSpinBox_6->setValue(powtab->setpoint+interval);
 
                    ui->pushButton_3->setStyleSheet("background-color:red");
 
@@ -680,11 +724,12 @@ void MainWindow::showtime()
                {
 
              //PAUSE CODE
+                   ui->pushButton_3->setStyleSheet("background-color:green");
                    delay(ui->spinBox->value());
 
                    conduct(4,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
@@ -694,7 +739,7 @@ void MainWindow::showtime()
                         output_status=!output_status;
                    }
                    else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                       ui->doubleSpinBox_6->setValue(powtab->setpoint+interval);
                    ui->pushButton_3->setStyleSheet("background-color:red");
 
 
@@ -707,10 +752,10 @@ void MainWindow::showtime()
       }
       if(s[1]=="On")        //Output2 on or off
       {
-          double out2_setpoint=ui->doubleSpinBox_17->value();
+           powtab->setpoint=ui->doubleSpinBox_17->value();
           double out2_tol=ui->doubleSpinBox_38->value();
-          double max=out2_setpoint+out2_tol;
-          double min=out2_setpoint-out2_tol;
+          double max=powtab->setpoint+out2_tol;
+          double min=powtab->setpoint-out2_tol;
           double final=ui->doubleSpinBox_19->value();
           double interval=ui->doubleSpinBox_18->value();
           if(s[3]=="In 1")
@@ -720,16 +765,19 @@ void MainWindow::showtime()
               double comp=s[4].toDouble();
 
 
-              if(comp>min and comp<max )
+                curtemp.push_back(comp);
+              if(checkset(2) and comp>min and comp<max )
               {
 
             //PAUSE CODE
-                  delay(ui->spinBox_2->value());
+             // check(1,2);
+                  ui->pushButton_5->setStyleSheet("background-color:green");
+                  //delay(ui->spinBox_2->value());
 
                   conduct(1,2);
 
 
-                  if(final==out2_setpoint )
+                  if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                   {
                       timer->stop();
                        ui->pushButton_2->setStyleSheet("background-color:black");
@@ -739,7 +787,7 @@ void MainWindow::showtime()
                        output_status=!output_status;
                   }
                   else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval),qDebug()<<"Re Sultan";
+                      datapoints=ui->spinBox_2->value(),ui->doubleSpinBox_17->setValue(powtab->setpoint+interval),curtemp.clear();
 
                   ui->pushButton_5->setStyleSheet("background-color:red");
 
@@ -757,11 +805,12 @@ void MainWindow::showtime()
                if(comp>min and comp<max )
                {
              //PAUSE CODE
-                   delay(final==out2_setpoint);
+                   ui->pushButton_5->setStyleSheet("background-color:green");
+                   delay(ui->spinBox_2->value());
 
                    conduct(2,2);
 
-                   if(comp > final-out2_tol && comp<final+out2_tol )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0))
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
@@ -770,7 +819,7 @@ void MainWindow::showtime()
                        clo();
                    }
                     else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                       ui->doubleSpinBox_17->setValue(powtab->setpoint+interval);
                    ui->pushButton_5->setStyleSheet("background-color:red");
 
                    con();
@@ -789,11 +838,12 @@ void MainWindow::showtime()
               if(comp>min and comp<max )
                {
              //PAUSE CODE
+                  ui->pushButton_5->setStyleSheet("background-color:green");
                    delay(ui->spinBox_2->value());
 
                    conduct(3,2);
 
-                   if(final==out2_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
@@ -803,7 +853,7 @@ void MainWindow::showtime()
                         output_status=!output_status;
                    }
                    else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                       ui->doubleSpinBox_17->setValue(powtab->setpoint+interval);
 
                    ui->pushButton_5->setStyleSheet("background-color:red");
                    con();
@@ -821,11 +871,12 @@ void MainWindow::showtime()
                if(comp>min and comp<max )
                {
              //PAUSE CODE
+                   ui->pushButton_5->setStyleSheet("background-color:green");
                    delay(ui->spinBox_2->value());
 
                    conduct(4,2);
 
-                   if(final==out2_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
@@ -835,7 +886,7 @@ void MainWindow::showtime()
                         output_status=!output_status;
                    }
                    else
-                        ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                        ui->doubleSpinBox_17->setValue(powtab->setpoint+interval);
 
                    ui->pushButton_5->setStyleSheet("background-color:red");
                    con();
@@ -905,12 +956,12 @@ void MainWindow::on_pushButton_2_clicked()
      //Write code??
 
 
-            QFile file1("/home/phy/Desktop/"+folder_name+"/"+"R~T"+".txt");
+            QFile file1("/home/phy/Desktop/ControlVI_Data/"+folder_name+"/"+"R~T"+".txt");
             file1.open(QIODevice::WriteOnly);
 
             QTextStream out(&file1);
 
-out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSetFieldWidth(20)<<"Current(A)"<<qSetFieldWidth(20)<<"Resistance(ohm)"<<endl;
+out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSetFieldWidth(20)<<"Current(A)"<<qSetFieldWidth(20)<<"Resistance(Ω)"<<endl;
             ui->pushButton_2->setStyleSheet("background-color:red");
             con();
             outs("outputEnable = on");
@@ -945,8 +996,19 @@ out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSe
         stop_connection();
         point=0;
         series->clear();
+        datapoints=ui->spinBox_2->value();
 
-        timer->start(1000);
+        if(powtab->setpoint < 150)
+        {
+            con();
+
+            outs("Out2.HiLmt "+QString::number(powtab->pow150));
+            outs("Out1.HiLmt "+arg1);
+
+            clo();
+        }
+
+        timer->start(100);
     }
     else
     {
@@ -965,7 +1027,7 @@ void MainWindow::on_connect_clicked()
 
 
 
-   con(true);
+   con();
    //Output1
 
        outs("Out1.selected?");
@@ -1016,10 +1078,10 @@ void MainWindow::on_connect_clicked()
        outs("In3.value?");
        outs("In4.value?");
 
-       clo(true);
+       clo();
 
        QFile file("/home/phy/ControlVI/ctc.txt");
-
+//qDebug()<<"^^^^^^^^^";
 
      QString s[100];
      int j=0;
@@ -1027,20 +1089,25 @@ void MainWindow::on_connect_clicked()
 
 
          while (!file.atEnd())
-         {
+         {//qDebug()<<"%%%%%%%%%%%%%%%%%%%";
 
                   char a[1025];
 
                       file.readLine(a,sizeof(a));
 
+                      //qDebug()<<a<<strlen(a);
+
                       QString temp;
 
-                      for(uint i=0;i<qstrlen(a)-3;i++)
+
+
+                      for(int i=0;i<int(strlen(a))-2;i++)
                        temp=temp+a[i];
-                      //qDebug()<<temp;
+
 
                       if(temp=="On" or temp=="Off")
                       {
+
                           int k=0; s[0]=temp; j++;
 
                          while(k<39)
@@ -1051,12 +1118,12 @@ void MainWindow::on_connect_clicked()
 
 
 
-                                 for(uint i=0;i<qstrlen(a)-3;i++)
+                                 for(int i=0;i<int(qstrlen(a))-2;i++)
                                  s[j]=s[j]+a[i];
 
                                j++;
 
-                              //qDebug()<<s[j-1];
+                              qDebug()<<s[j-1];
 
 
                              k++;
@@ -1065,8 +1132,11 @@ void MainWindow::on_connect_clicked()
                          break;
                       }
 
+                      qDebug()<<temp;
+
          }
    //Output1
+
 
          if(s[0]=="On")
          {
@@ -1405,6 +1475,9 @@ void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_doubleSpinBox_6_valueChanged(const QString &arg1)
 {
+    pidtab->setpt=arg1.toDouble();
+    powtab->setpoint=arg1.toDouble();
+
     con();
 
     outs("Out1.PID.setpoint "+arg1);
@@ -1531,8 +1604,10 @@ void MainWindow::on_comboBox_6_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_doubleSpinBox_17_valueChanged(const QString &arg1)
 {
-    qDebug()<<"Bhajarangi bhaijan";
-     con();
+    pidtab->setpt=arg1.toDouble();
+    powtab->setpoint=arg1.toDouble();
+
+    con();
 
     outs("Out2.PID.setpoint "+arg1);
 
@@ -1989,4 +2064,15 @@ void MainWindow::on_keithley_clicked()
 void MainWindow::on_keithley6_clicked()
 {
     ke6->show();
+}
+
+
+void MainWindow::on_powlmt2_clicked()
+{
+    powtab->show();
+}
+
+void MainWindow::on_powlmt1_clicked()
+{
+    powtab->show();
 }

@@ -15,17 +15,23 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     ke6221.cpp \
-    ke2182a.cpp
+    ke2182a.cpp \
+    power.cpp \
+    controlpid.cpp
 
 HEADERS  += mainwindow.h \
     ke6221.h \
     ke2182a.h \
     Scriptwrite.h \
-    scriptwrite2.h
+    scriptwrite2.h \
+    power.h \
+    controlpid.h
 
 FORMS    += mainwindow.ui \
     ke6221.ui \
-    ke2182a.ui
+    ke2182a.ui \
+    power.ui \
+    controlpid.ui
 
 DISTFILES += \
     button_ctc100.png

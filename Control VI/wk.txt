@@ -1,4 +1,4 @@
-Script started on Sunday 26 March 2017 11:29:04 PM IST
+Script started on Thursday 30 March 2017 08:50:06 PM IST
 spawn ibtest
 d
 6
@@ -49,4 +49,4 @@ You can:
 	request ser(v)ice (board only)
 	(w)rite data string
 : 
-Script done on Sunday 26 March 2017 11:29:04 PM IST
+Script done on Thursday 30 March 2017 08:50:06 PM IST

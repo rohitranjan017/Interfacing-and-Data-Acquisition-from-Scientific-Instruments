@@ -1,2 +1,2 @@
 #!/bin/sh
-mkdir TRyuio
+mkdir first

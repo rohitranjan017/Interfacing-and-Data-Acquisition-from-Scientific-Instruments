@@ -1,14 +1,13 @@
-Script started on Sunday 26 March 2017 11:29:04 PM IST
+Script started on Thursday 30 March 2017 08:50:48 PM IST
 spawn telnet 100.10.19.37
-Trying 100.10.19.37...
-Connected to 100.10.19.37.
-Escape character is '^]'.
-
-
-Out2.PID.Mode = On
-Error: "ûû" is not a valid instruction
-^]^Jquit^J^]^J
-telnet> quit
-Connection closed.
-^@
-Script done on Sunday 26 March 2017 11:29:05 PM IST
+
+
+outputEnable = off
+system.other.reset Ports
+Trying 100.10.19.37...
+Connected to 100.10.19.37.
+Escape character is '^]'.
+Error: "ûû" is not a valid instruction
+Connection closed by foreign host.
+
+Script done on Thursday 30 March 2017 08:50:48 PM IST

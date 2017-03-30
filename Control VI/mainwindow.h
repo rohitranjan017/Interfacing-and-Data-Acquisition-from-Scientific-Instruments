@@ -5,7 +5,8 @@
 #include <ke6221.h>
 #include <ke2182a.h>
 #include <QtCharts>
-
+#include <power.h>
+#include <controlpid.h>
 using namespace QtCharts;
 namespace Ui {
 class MainWindow;
@@ -28,7 +29,8 @@ public:
       QValueAxis *axisY;
       ke2182a* ke2=new ke2182a;
       ke6221* ke6=new ke6221;
-
+      power* powtab=new power;
+      controlpid* pidtab=new controlpid;
 
 public slots:
     void showtime();
@@ -115,6 +117,10 @@ private slots:
     void on_keithley_clicked();
 
     void on_keithley6_clicked();
+
+    void on_powlmt2_clicked();
+
+    void on_powlmt1_clicked();
 
 private:
     Ui::MainWindow *ui;
