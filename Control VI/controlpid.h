@@ -13,7 +13,8 @@ class controlpid : public QWidget
 
 public:
     double setpt;
-    double p150,p200,p250,p300,p350,p400,i150,i200,i250,i300,i400,d150,d200,d250,d300,d350,d400;
+    double p150,p200,p250,p300,p350,p400,i150,i200,i250,i300,i350,i400,d150,d200,d250,d300,d350,d400;
+    bool mode=1;
     explicit controlpid(QWidget *parent = 0);
     ~controlpid();
 
@@ -40,7 +41,7 @@ private slots:
 
     void on_I200_valueChanged(const QString &arg1);
 
-    void on_I250_2_editingFinished();
+    //void on_I250_2_editingFinished();
 
     void on_I300_valueChanged(const QString &arg1);
 

@@ -122,10 +122,16 @@ private slots:
 
     void on_powlmt1_clicked();
 
+    void on_pidctrl1_clicked();
+
+    void on_pidctrl2_clicked();
+    void configure_power(double setpoint);
+    void configure_pid(double setpoint);
+
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
-    void conduct(int temp, int impdel);
+    void conduct(int temp);
     bool checkset(int out);
 };
 

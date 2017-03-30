@@ -331,7 +331,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Hold&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Datapoints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_53">
@@ -796,7 +796,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Hold&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Datapoints&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_52">
@@ -1554,37 +1554,6 @@
         <string>PID</string>
        </property>
       </widget>
-      <zorder>label_21</zorder>
-      <zorder>comboBox_5</zorder>
-      <zorder>comboBox_6</zorder>
-      <zorder>label_24</zorder>
-      <zorder>label_25</zorder>
-      <zorder>doubleSpinBox_16</zorder>
-      <zorder>doubleSpinBox_17</zorder>
-      <zorder>doubleSpinBox_18</zorder>
-      <zorder>label_26</zorder>
-      <zorder>label_27</zorder>
-      <zorder>doubleSpinBox_19</zorder>
-      <zorder>label_28</zorder>
-      <zorder>doubleSpinBox_20</zorder>
-      <zorder>label_29</zorder>
-      <zorder>label_52</zorder>
-      <zorder>out2mode_4</zorder>
-      <zorder>groupBox_7</zorder>
-      <zorder>pushButton_4</zorder>
-      <zorder>label_64</zorder>
-      <zorder>label_65</zorder>
-      <zorder>doubleSpinBox_37</zorder>
-      <zorder>doubleSpinBox_38</zorder>
-      <zorder>label_66</zorder>
-      <zorder>pushButton_5</zorder>
-      <zorder>out2mode</zorder>
-      <zorder>spinBox_2</zorder>
-      <zorder>label_99</zorder>
-      <zorder>accuracy2</zorder>
-      <zorder>powlmt2</zorder>
-      <zorder>powlmt2</zorder>
-      <zorder>pidctrl2</zorder>
      </widget>
     </widget>
    </widget>
@@ -1598,7 +1567,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
