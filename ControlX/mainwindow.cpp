@@ -89,7 +89,7 @@ void con(bool sig=false)
    if(sig==true)
        out<<"sleep 0.55\n";
    else
-   out<<"sleep 0.2\n";
+   out<<"sleep 0.4\n";
    out<<"send ";
    out<<"\"";
    out<<"\\n";
@@ -110,7 +110,7 @@ void clo(bool sig=false)
     if(sig==true)
         out<<"sleep 0.55\n";
     else
-    out<<"sleep 0.2\n";
+    out<<"sleep 0.4\n";
     out<<"send ";
     out<<"\"";
     out<<"\\";
@@ -935,6 +935,8 @@ void MainWindow::on_pushButton_2_clicked()
         while(1){
 
             folder=QInputDialog::getText(this,"Folder","Enter Folder name");
+            if(folder=="")
+                return;
             QFile file("/home/phy/ControlX/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
