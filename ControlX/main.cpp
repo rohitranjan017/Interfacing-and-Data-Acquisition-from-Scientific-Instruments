@@ -4,8 +4,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
     system("/home/phy/ControlX/./start.sh");
+    MainWindow w;
+
     w.showMaximized();
 
     return a.exec();

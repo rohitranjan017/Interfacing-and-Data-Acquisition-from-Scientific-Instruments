@@ -6,10 +6,7 @@
 #include <QDebug>
 #include <QTime>
 #include "allfun6.h"
-#include <QPixmap>
-#include <QSplineSeries>
 #include <QPair>
-#include <QProgressDialog>
 #define sta sta6
 #define sto sto6
 #define read read6
@@ -40,45 +37,14 @@ bool mode1;
 bool mode2;
 bool mode3;
 bool mode4;
-bool inmode1,inmode2,inmode3,inmode4;
+bool inmode1,inmode2,inmode3,inmode4; int datapoints;
 QString v[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê",
                 "300kê","Auto" };
 QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 QFile file("/home/phy/ControlX/script.sh");
 QTextStream out(&file);
-QList <double> setpoints;
-bool MainWindow::checkset(int out)
-{
-    if(setpoints.size()==5)
-    {
-        auto mm = std::minmax_element(setpoints.begin(), setpoints.end());
-
-        fit.open(QIODevice::Append);
-        QTextStream foo(&fit);
-
-        foo<<*mm.second-*mm.first<<endl;
-
-        if(out==1)
-        {
-            if(*mm.second-*mm.first<=ui->doubleSpinBox_25->value())
-                return true;
-            else
-                return false;
-
-        }
-        else
-        {
-            if(*mm.second-*mm.first<=ui->doubleSpinBox_38->value())
-                return true;
-            else
-                return false;
-        }
-    }
-    else
-        return false;
-}
-
-void con(bool sig=false)
+QList <double> curtemp;
+void con()
 {
     //conecting code starts
 
@@ -86,10 +52,10 @@ void con(bool sig=false)
 
    out<<"#!/usr/bin/expect\n";
    out<<"spawn telnet 100.10.19.37\n";
-   if(sig==true)
+   /*if(sig==true)
        out<<"sleep 0.55\n";
    else
-   out<<"sleep 0.4\n";
+   out<<"sleep 0.2\n";*/
    out<<"send ";
    out<<"\"";
    out<<"\\n";
@@ -102,16 +68,16 @@ void con(bool sig=false)
    out<<"\n";
    //connecting code ends
 }
-void clo(bool sig=false)
+void clo()
 {
 
     //connection terminating code starts//
 
-    if(sig==true)
-        out<<"sleep 0.55\n";
-    else
-    out<<"sleep 0.4\n";
-    out<<"send ";
+    //if(sig==true)
+      //  out<<"sleep 0.55\n";
+    //else
+    //out<<"sleep 0.2\n";
+   /* out<<"send ";
     out<<"\"";
     out<<"\\";
     out<<"x1D";
@@ -135,18 +101,18 @@ void clo(bool sig=false)
     out<<"\"";
     out<<"telnet> ";
     out<<"\"";
-    out<<"\n";
+    out<<"\n";*/
     out<<"send ";
-    out<<"\"quit";
+    out<<"\"system.other.reset Ports";
     out<<"\\n";
     out<<"\"";
     out<<"\n";
 
-    out<<"interact\n";
+   // out<<"system.other.reset Ports\n";
+     out<<"interact\n";
     //connection terminating code ends//
     file.close();
-    system("script -c /home/phy/ControlX/./script.sh /home/phy/ControlX/ctc.txt");
-
+   system("script -c /home/phy/ControlX/./script.sh /home/phy/ControlX/ctc.txt");
 }
 void pre()
 {
@@ -165,6 +131,197 @@ void outs(QString s)
     out<<s;
     post();
 }
+
+
+void MainWindow::configure_pid(double setpoint)
+{
+
+    if(pidtab->mode==1)
+    {
+
+    if(setpoint <150)
+    {
+        qDebug()<<"sdfgvdsg";
+        con();
+
+        outs("Out1.PID.P "+QString::number(pidtab->p150));
+        outs("Out2.PID.P "+QString::number(pidtab->p150));
+        outs("Out1.PID.I "+QString::number(pidtab->i150));
+        outs("Out2.PID.I "+QString::number(pidtab->i150));
+        outs("Out1.PID.D "+QString::number(pidtab->d150));
+        outs("Out2.PID.D "+QString::number(pidtab->d150));
+
+        clo();
+    }
+    else
+    if(setpoint < 200)
+    {
+        con();
+
+        outs("Out1.PID.P "+QString::number(pidtab->p200));
+        outs("Out2.PID.P "+QString::number(pidtab->p200));
+        outs("Out1.PID.I "+QString::number(pidtab->i200));
+        outs("Out2.PID.I "+QString::number(pidtab->i200));
+        outs("Out1.PID.D "+QString::number(pidtab->d200));
+        outs("Out2.PID.D "+QString::number(pidtab->d200));
+
+        clo();
+    }
+    else
+    if(setpoint < 250)
+    {
+        con();
+
+        outs("Out1.PID.P "+QString::number(pidtab->p250));
+        outs("Out2.PID.P "+QString::number(pidtab->p250));
+        outs("Out1.PID.I "+QString::number(pidtab->i250));
+        outs("Out2.PID.I "+QString::number(pidtab->i250));
+        outs("Out1.PID.D "+QString::number(pidtab->d250));
+        outs("Out2.PID.D "+QString::number(pidtab->d250));
+
+        clo();
+    }
+    else
+    if(setpoint < 300)
+    {
+        con();
+        outs("Out1.PID.P "+QString::number(pidtab->p300));
+        outs("Out2.PID.P "+QString::number(pidtab->p300));
+        outs("Out1.PID.I "+QString::number(pidtab->i300));
+        outs("Out2.PID.I "+QString::number(pidtab->i300));
+        outs("Out1.PID.D "+QString::number(pidtab->d300));
+        outs("Out2.PID.D "+QString::number(pidtab->d300));
+
+        clo();
+    }
+    else
+    if(setpoint < 350)
+    {
+        con();
+
+        outs("Out1.PID.P "+QString::number(pidtab->p350));
+        outs("Out2.PID.P "+QString::number(pidtab->p350));
+        outs("Out1.PID.I "+QString::number(pidtab->i350));
+        outs("Out2.PID.I "+QString::number(pidtab->i350));
+        outs("Out1.PID.D "+QString::number(pidtab->d350));
+        outs("Out2.PID.D "+QString::number(pidtab->d350));
+
+        clo();
+    }
+    else
+    {
+        con();
+
+        outs("Out1.PID.P "+QString::number(pidtab->p400));
+        outs("Out2.PID.P "+QString::number(pidtab->p400));
+        outs("Out1.PID.I "+QString::number(pidtab->i400));
+        outs("Out2.PID.I "+QString::number(pidtab->i400));
+        outs("Out1.PID.D "+QString::number(pidtab->d400));
+        outs("Out2.PID.D "+QString::number(pidtab->d400));
+
+        clo();
+    }
+    }
+}
+
+void MainWindow::configure_power(double setpoint)
+{
+    if(setpoint <150)
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow150));
+        outs("Out2.HiLmt "+QString::number(powtab->pow150));
+
+
+        clo();
+    }
+    else
+    if(setpoint < 200)
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow200));
+        outs("Out2.HiLmt "+QString::number(powtab->pow200));
+
+
+        clo();
+    }
+    else
+    if(setpoint < 250)
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow250));
+        outs("Out2.HiLmt "+QString::number(powtab->pow250));
+
+        clo();
+    }
+    else
+    if(setpoint < 300)
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow300));
+        outs("Out2.HiLmt "+QString::number(powtab->pow300));
+
+
+        clo();
+    }
+    else
+    if(setpoint < 350)
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow350));
+        outs("Out2.HiLmt "+QString::number(powtab->pow350));
+
+
+        clo();
+    }
+    else
+    {
+        con();
+
+        outs("Out1.HiLmt "+QString::number(powtab->pow400));
+        outs("Out2.HiLmt "+QString::number(powtab->pow400));
+
+        clo();
+    }
+}
+
+bool MainWindow::checkset(int out)
+{
+    if((out==1 and curtemp.size()==datapoints) or (out==2 and curtemp.size()==datapoints) )
+    {
+        auto mm = std::minmax_element(curtemp.begin(), curtemp.end());
+        curtemp.pop_front();
+        QFile fit("bugy.txt");
+        fit.open(QIODevice::Append);
+        QTextStream foo(&fit);
+
+        foo<<*mm.second-*mm.first<<endl;
+
+        if(out==1)
+        {
+            if(*mm.second-*mm.first<=ui->doubleSpinBox_25->value())
+                return true;
+            else
+                return false;
+
+        }
+        else
+        {
+            if(*mm.second-*mm.first<ui->accuracy2->value())
+                return true;
+            else
+                return false;
+        }
+    }
+    else
+        return false;
+}
+
 
 void readfiles()
 {
@@ -218,17 +375,6 @@ MainWindow::MainWindow(QWidget *parent) :
     timer=new QTimer();
     connect(timer, SIGNAL(timeout()),this,SLOT(showtime()));
 
-    /*QString daf="-4.17010701e+007";
-    double asfa=daf.toDouble();
-    qreal adfsd=qreal(asfa);
-*/
-
-
-
-   /* ptr->series[5]->append(40,adfsd);
-    ptr->chart[5]->axisY()->setRange(adfsd+adfsd/2,adfsd-adfsd/2);*/
-
-    //Graphs...1
 
 
 
@@ -289,11 +435,7 @@ void MainWindow::conduct(int temp,int impdel)
     }while(vec[0]=="'");
 
     tot=vec[0].toInt();
-    //Process.....1
-    //QProgressDialog progress(this);
-    //progress.setLabelText("Plotting");
-    //progress.setRange(0,11);
-   // progress.setModal(true);
+
 
     con();
     outs("In1.selected?");
@@ -329,9 +471,9 @@ void MainWindow::conduct(int temp,int impdel)
 
                    QString temp;
 
-                   for(uint i=0;i<qstrlen(a)-3;i++)
+                   for(int i=0;i<int(qstrlen(a))-2;i++)
                     temp=temp+a[i];
-                   //qDebug()<<temp;
+
 
                    if(temp=="On" || temp=="Off")
                    {
@@ -340,12 +482,12 @@ void MainWindow::conduct(int temp,int impdel)
                       while(k<2)
                       {
                              file.readLine(a,sizeof(a));
-                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              for(int i=0;i<int(qstrlen(a))-2;i++)
                               s[j]=s[j]+a[i];
 
                             j++;
 
-                          //  qDebug()<<s[j-1];
+
 
 
                           k++;
@@ -377,9 +519,7 @@ void MainWindow::conduct(int temp,int impdel)
 
     for(int i=0;i<11;i++)
     {
-        //Progress.....
-        //progress.setValue(i);
-       // qApp->processEvents();
+
 
         sta();
         write("ANA:PROP1 "+props[i]);
@@ -423,15 +563,16 @@ void MainWindow::conduct(int temp,int impdel)
 
         for(int j=0;j<vec.size();j++)
         {//qDebug()<<vec[j];
+
             QStringList my = vec[j].split(',');
-            //ui->label_2->setText("");
+
             if(my.size()>=2)
             out<<qSetFieldWidth(20)<<my[1];
             else
             out<<qSetFieldWidth(20)<<"NA";
 
              qApp->processEvents();
-           // ui->label_2->setText("");
+
             if(j!=25)
                 continue;
 
@@ -445,49 +586,7 @@ void MainWindow::conduct(int temp,int impdel)
                   double xt=cur.toDouble();
                   qreal y=qreal(yt);
                   qreal x=qreal(xt);
-                  //ui->label_2->setText("Plotting...");
-            //qDebug()<<x<<" "<<y;
-                  /*  if(y>0)
-             {
-                  if(pts==0)
-                      ptr->axisY[i]->setRange(y-y/100,y+y/100);
-                   else
-                      if(y>=ptr->axisY[i]->max())
-                      { foo<<y<<"    1"<<ptr->axisY[i]->max()<<endl; ptr->axisY[i]->setMax(y+(y-ptr->axisY[i]->max()));}
-                        else
-                          if(y<ptr->axisY[i]->min())
-                            { foo<<y<<"    2"<<ptr->axisY[i]->min()<<endl; ptr->axisY[i]->setMin(y-(ptr->axisY[i]->min()-y));}
 
-                    ptr->series[i]->append(x,y);
-                  pts++;
-                  ptr->axisX[i]->setRange(ptr->axisX[i]->min(),x+10);}
-
-                    else
-                    {
-                        if(pts==0)
-                            ptr->axisY[i]->setRange(y+y/100,y-y/100);
-                         else
-                            if(y>=ptr->axisY[i]->max())
-                              { foo<<y<<"    1"<<ptr->axisY[i]->max()<<endl; ptr->axisY[i]->setMax(y+(y-ptr->axisY[i]->max()));}
-                              else
-                                if(y<ptr->axisY[i]->min())
-                                   {foo<<y<<"    2"<<ptr->axisY[i]->min()<<endl; ptr->axisY[i]->setMin(y-(ptr->axisY[i]->min()-y));}
-
-                          ptr->series[i]->append(x,y);
-                        pts++;
-                        ptr->axisX[i]->setRange(ptr->axisX[i]->min(),x+10);
-                    }*/
-
-            //char a[1025];
-
-           /*     fi.readLine(a,sizeof(a));
-                QString cur=a;
-            double yt=cur.toDouble();
-            fi.readLine(a,sizeof(a));
-            cur=a;
-            double xt=cur.toDouble();
-            qreal y=qreal(yt);
-            qreal x=qreal(xt);*/
 
 
 
@@ -508,30 +607,35 @@ void MainWindow::conduct(int temp,int impdel)
                 else
                 if(y>M[i])
                     M[i]=y;
-                //ptr->axisX[i]->setMax(x+5);
+
 
 
             }
 
-            series[i]->append(x,y);
-            axisY[i]->setRange(m[i]-(M[i]-m[i])/10,M[i]+(M[i]-m[i])/10); pts[i]++;
+            pts[i]++;
             axisX[i]->setRange(startx,x+2);
-           // ui->label_2->setText("");
+            axisY[i]->setRange(m[i]-(M[i]-m[i])/10,M[i]+(M[i]-m[i])/10);
 
-             //foo<<i<<" "<<pts[i]<<endl;
-               // foo<<y<<" "<<m[i]<<" "<<M[i]<<endl<<endl;
+            series[i]->append(x,y);
+
+
+
             }
         }
         out<<endl;
 
-            //Process...
-        //qApp->processEvents();
+       // qDebug()<<"^^^^^^^^^^^";
 
     }
 
 }
 MainWindow::~MainWindow()
 {
+    powtab->close();
+    pidtab->close();
+    trace->close();\
+    meas->close();
+
     delete ui;
 }
 
@@ -567,9 +671,8 @@ void MainWindow::showtime()
 
                    QString temp;
 
-                   for(uint i=0;i<qstrlen(a)-3;i++)
+                   for(int i=0;i<int(qstrlen(a))-2;i++)
                     temp=temp+a[i];
-                   //qDebug()<<temp;
 
                    if(temp=="On" || temp=="Off")
                    {
@@ -578,12 +681,12 @@ void MainWindow::showtime()
                       while(k<8)
                       {
                              file.readLine(a,sizeof(a));
-                              for(uint i=0;i<qstrlen(a)-3;i++)
+                              for(int i=0;i<int(qstrlen(a))-2;i++)
                               s[j]=s[j]+a[i];
 
                             j++;
 
-                           // qDebug()<<s[j-1];
+
 
 
                           k++;
@@ -594,11 +697,11 @@ void MainWindow::showtime()
 
       }
       if(s[0]=="On")        //Output1 on or off
-      {//qDebug()<<s[2];
-          double out1_setpoint=ui->doubleSpinBox_6->value();
+      {
+
           double out1_tol=ui->doubleSpinBox_25->value();
-          double max=out1_setpoint+out1_tol;
-          double min=out1_setpoint-out1_tol;
+          double max=powtab->setpoint+out1_tol;
+          double min=powtab->setpoint-out1_tol;
           double final=ui->doubleSpinBox_8->value();
           double interval=ui->doubleSpinBox_7->value();
           if(s[2]=="In 1")
@@ -607,62 +710,60 @@ void MainWindow::showtime()
               ui->lcdNumber->display(s[4]);
               double comp=s[4].toDouble();
 
-              /*if(setpoints.size()>=5)
-                  setpoints.pop_back();
-              setpoints.push_back(comp);*/
+              curtemp.push_back(comp); datapoints=ui->spinBox->value();
 
-              if(comp>min and comp<max )
+              if(checkset(1) and comp>min and comp<max )
               {
-                 // ui->pushButton_3->setStyleSheet("background-color:green");
-               //   setpoints.clear();
+                  //PAUSE CODE by bikash**
 
-                  //PAUSE CODE
-                  delay(ui->spinBox->value());
+
+                  ui->pushButton_3->setStyleSheet("background-color:green");
+
+                  //delay(ui->spinBox->value());
 
                   conduct(1,1);
 
-                  if(final==out1_setpoint )
+                  if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                   {
                       timer->stop();
-
-                       ui->pushButton_2->setStyleSheet("background-color:black");
+                      ui->pushButton_2->setStyleSheet("background-color:black");
                       con();
                       outs("OutputEnable = Off");
-
                       clo();
-
+                      z=!z;
                   }
                   else
-                      ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
+                  {
+                      datapoints=ui->spinBox->value(),ui->doubleSpinBox_6->setValue(powtab->setpoint+interval),curtemp.clear();
+                      configure_pid(powtab->setpoint);
+                      configure_power(powtab->setpoint);
+
+                  }
 
                   ui->pushButton_3->setStyleSheet("background-color:red");
 
                   con();
                   outs("Out1.PID.Mode = On");
                   clo();
-
               }
-
           }
           else if(s[2]=="In 2")
           {
                ui->lcdNumber_2->display(s[5]);
                double comp=s[5].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
+               curtemp.push_back(comp); datapoints=ui->spinBox->value();
 
-               if(comp>min and comp<max )
+               if(checkset(2) and comp>min and comp<max )
                {
-                   //ui->pushButton_3->setStyleSheet("background-color:green");
-                  // setpoints.clear();
+
              //PAUSE CODE
-                  delay(ui->spinBox->value());
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+                  //delay(ui->spinBox->value());
 
                  conduct(2,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                    {
                        timer->stop();
 
@@ -670,10 +771,13 @@ void MainWindow::showtime()
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        z=!z;
                    }
                    else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
-
+                     { datapoints=ui->spinBox->value(), ui->doubleSpinBox_6->setValue(powtab->setpoint+interval),curtemp.clear();
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
                    ui->pushButton_3->setStyleSheet("background-color:red");
 
 
@@ -685,33 +789,33 @@ void MainWindow::showtime()
           }
           else if(s[2]=="In 3")
           {
-               ui->lcdNumber_3->display(s[6]);  //qDebug()<<s[6]<<endl;
+               ui->lcdNumber_3->display(s[6]);
                double comp=s[6].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
+               curtemp.push_back(comp); datapoints=ui->spinBox->value();
 
-               if(comp>min and comp<max )
+               if(checkset(3) and comp>min and comp<max )
                {
-                  // ui->pushButton_3->setStyleSheet("background-color:green");
-                   //setpoints.clear();
-             //PAUSE CODE
-                  delay(ui->spinBox->value());
+
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+                  //delay(ui->spinBox->value());
 
                   conduct(3,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                       z=!z;
                    }
                     else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
-
+                      { datapoints=ui->spinBox->value(),ui->doubleSpinBox_6->setValue(powtab->setpoint+interval),curtemp.clear();
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
                    ui->pushButton_3->setStyleSheet("background-color:red");
 
 
@@ -726,30 +830,32 @@ void MainWindow::showtime()
                ui->lcdNumber_4->display(s[7]);
                double comp=s[7].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
+               curtemp.push_back(comp); datapoints=ui->spinBox->value();
 
-               if(comp>min and comp<max )
+               if(checkset(4) and comp>min and comp<max )
                {
-                   //ui->pushButton_3->setStyleSheet("background-color:green");
-                   //setpoints.clear();
+
              //PAUSE CODE
-                   delay(ui->spinBox->value());
+                   ui->pushButton_3->setStyleSheet("background-color:green");
+                   //delay(ui->spinBox->value());
 
                    conduct(4,1);
 
-                   if(final==out1_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        z=!z;
                    }
-                   else
-                       ui->doubleSpinBox_6->setValue(out1_setpoint+interval);
-                   ui->pushButton_3->setStyleSheet("background-color:red");
+                   else{
+                       datapoints=ui->spinBox->value(),ui->doubleSpinBox_6->setValue(powtab->setpoint+interval),curtemp.clear();
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
+                       ui->pushButton_3->setStyleSheet("background-color:red");
 
 
                    con();
@@ -761,42 +867,48 @@ void MainWindow::showtime()
       }
       if(s[1]=="On")        //Output2 on or off
       {
-          double out2_setpoint=ui->doubleSpinBox_17->value();
+
+
           double out2_tol=ui->doubleSpinBox_38->value();
-          double max=out2_setpoint+out2_tol;
-          double min=out2_setpoint-out2_tol;
+          double max=powtab->setpoint+out2_tol;
+          double min=powtab->setpoint-out2_tol;
           double final=ui->doubleSpinBox_19->value();
           double interval=ui->doubleSpinBox_18->value();
           if(s[3]=="In 1")
           {
-                //qDebug()<<s[4];
+
               ui->lcdNumber->display(s[4]);
               double comp=s[4].toDouble();
 
-              /*if(setpoints.size()>=5)
-                  setpoints.pop_back();
-              setpoints.push_back(comp);*/
 
-              if(comp>min and comp<max )
+              curtemp.push_back(comp); datapoints=ui->spinBox_2->value();
+
+              if(checkset(2) and comp>min and comp<max )
               {
-                  //ui->pushButton_5->setStyleSheet("background-color:green");
-                  //setpoints.clear();
+
             //PAUSE CODE
-                  delay(ui->spinBox_2->value());
+             // check(1,2);
+                  ui->pushButton_5->setStyleSheet("background-color:green");
+                  //delay(ui->spinBox_2->value());
 
                   conduct(1,2);
 
-                  if(final==out2_setpoint )
+
+                  if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0)  )
                   {
                       timer->stop();
                        ui->pushButton_2->setStyleSheet("background-color:black");
                       con();
                       outs("OutputEnable = Off");
                       clo();
+                       z=!z;
                   }
                   else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                     { datapoints=ui->spinBox_2->value(),ui->doubleSpinBox_17->setValue(powtab->setpoint+interval),curtemp.clear();
 
+                      configure_pid(powtab->setpoint);
+                      configure_power(powtab->setpoint);
+                  }
                   ui->pushButton_5->setStyleSheet("background-color:red");
 
 
@@ -810,32 +922,33 @@ void MainWindow::showtime()
           {
                ui->lcdNumber_2->display(s[5]);
                double comp=s[5].toDouble();
+               curtemp.push_back(comp); datapoints=ui->spinBox_2->value();
 
-              /* if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
-
-               if(comp>min and comp<max )
+               if(checkset(2) and comp>min and comp<max )
                {
-                  // ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
-
              //PAUSE CODE
-                   delay(final==out2_setpoint);
+                   ui->pushButton_5->setStyleSheet("background-color:green");
+                   //delay(ui->spinBox_2->value());
 
                    conduct(2,2);
 
-                   if(comp > final-out2_tol && comp<final+out2_tol )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0))
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                       z=!z;
                    }
                     else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
-                   ui->pushButton_5->setStyleSheet("background-color:red");
+                   {datapoints=ui->spinBox_2->value(),ui->doubleSpinBox_17->setValue(powtab->setpoint+interval),curtemp.clear();
+
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
+
+                       ui->pushButton_5->setStyleSheet("background-color:red");
 
                    con();
                    outs("Out2.PID.Mode = On");
@@ -846,36 +959,35 @@ void MainWindow::showtime()
           }
           else if(s[2]=="In 3")
           {
-               ui->lcdNumber_3->display(s[6]); //qDebug()<<s[6]<<endl;
+               ui->lcdNumber_3->display(s[6]);
                double comp=s[6].toDouble();
 
-               if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);
+               curtemp.push_back(comp); datapoints=ui->spinBox_2->value();
 
-              if(comp>min and comp<max )
+              if(checkset(3) and comp>min and comp<max )
                {
-                   //ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
              //PAUSE CODE
-                   delay(ui->spinBox_2->value());
+                  ui->pushButton_5->setStyleSheet("background-color:green");
+                   //delay(ui->spinBox_2->value());
 
                    conduct(3,2);
 
-                   if(final==out2_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        z=!z;
                    }
                    else
-                       ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                      { datapoints=ui->spinBox_2->value(),ui->doubleSpinBox_17->setValue(powtab->setpoint+interval),curtemp.clear();
 
-                   ui->pushButton_5->setStyleSheet("background-color:red");
-
-
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
+                       ui->pushButton_5->setStyleSheet("background-color:red");
                    con();
                    outs("Out2.PID.Mode = On");
                    clo();
@@ -887,33 +999,32 @@ void MainWindow::showtime()
                ui->lcdNumber_4->display(s[7]);
                double comp=s[7].toDouble();
 
-               /*if(setpoints.size()>=5)
-                   setpoints.pop_back();
-               setpoints.push_back(comp);*/
+                curtemp.push_back(comp); datapoints=ui->spinBox_2->value();
 
-               if(comp>min and comp<max )
+               if(checkset(4) and comp>min and comp<max )
                {
-                   //ui->pushButton_5->setStyleSheet("background-color:green");
-                   //setpoints.clear();
              //PAUSE CODE
+                   ui->pushButton_5->setStyleSheet("background-color:green");
                    delay(ui->spinBox_2->value());
 
                    conduct(4,2);
 
-                   if(final==out2_setpoint )
+                   if((final<powtab->setpoint+interval&&interval>0)||(final>powtab->setpoint+interval&&interval<0) )
                    {
                        timer->stop();
                         ui->pushButton_2->setStyleSheet("background-color:black");
                        con();
                        outs("OutputEnable = Off");
                        clo();
+                        z=!z;
                    }
                    else
-                        ui->doubleSpinBox_17->setValue(out2_setpoint+interval);
+                      {  datapoints=ui->spinBox_2->value(),ui->doubleSpinBox_17->setValue(powtab->setpoint+interval),curtemp.clear();
 
+                       configure_pid(powtab->setpoint);
+                       configure_power(powtab->setpoint);
+                   }
                    ui->pushButton_5->setStyleSheet("background-color:red");
-
-
                    con();
                    outs("Out2.PID.Mode = On");
                    clo();
@@ -934,9 +1045,11 @@ void MainWindow::on_pushButton_2_clicked()
 
         while(1){
 
-            folder=QInputDialog::getText(this,"Folder","Enter Folder name");
-            if(folder=="")
+            bool ok=false;
+            folder=QInputDialog::getText(this,"Folder","Enter folder name to save files",QLineEdit::Normal,"PHY ",&ok);
+            if(ok==false)
                 return;
+
             QFile file("/home/phy/ControlX/fault.sh");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
@@ -954,15 +1067,6 @@ void MainWindow::on_pushButton_2_clicked()
                 file1.readLine(a,sizeof(a));
                 i++;
 
-
-             //QFile file("/home/phy/ControlX/bat.txt");
-
-             //file.open(QIODevice::ReadOnly);
-
-             /*if(!file.size()<=2)
-                 break;
-             else*/
-
         }
 
             if(i==4)
@@ -975,7 +1079,18 @@ void MainWindow::on_pushButton_2_clicked()
 
             }
             else
-                break;
+             if(i==5)
+             {
+                 QMessageBox::StandardButton reply;
+                 reply=QMessageBox::warning(this,"WARNING!!!","Folder name can not be empty",QMessageBox::Ok);
+                 if(reply==QMessageBox::Ok)
+                     return;
+
+             }
+             else
+             {
+               break;
+             }
 
 
 
@@ -1024,7 +1139,7 @@ void MainWindow::on_pushButton_2_clicked()
             }
 
             out<<endl<<endl;
-
+            qApp->processEvents();
 
         }
     //6 8 17 19
@@ -1046,7 +1161,18 @@ void MainWindow::on_pushButton_2_clicked()
         ui->pushButton_3->setStyleSheet("background-color:red");
         ui->pushButton_5->setStyleSheet("background-color:red");
 
-        timer->start(1000);
+        for(int i=0;i<11;i++)
+            series[i]->clear(),pts[i]=0;
+
+        if(mode3==1)
+            powtab->setpoint=pidtab->setpt=ui->doubleSpinBox_6->value();
+    else
+        powtab->setpoint=pidtab->setpt=ui->doubleSpinBox_17->value();
+
+    configure_power(powtab->setpoint);
+    configure_pid(powtab->setpoint);
+
+        timer->start(100);
 
 
     }
@@ -1060,7 +1186,7 @@ void MainWindow::on_pushButton_2_clicked()
 
             clo();
 
-             ui->pushButton_2->setStyleSheet("background-color:black");
+
 
             timer->stop();
 
@@ -1076,32 +1202,10 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_connect_clicked()
 {
-    /*QLabel *lbl = new QLabel;
-    QMovie *movie = new QMovie(":/gears.gif");
-    lbl->setMovie(movie);
-    lbl->setScaledContents(true);
-    //lbl->show();
-    movie->start();*/
-
-    /*con();
-    outs("Connected!!!");
-    clo();
-*/
-
-    /*QMessageBox::StandardButton reply;
-
-     reply = QMessageBox::information(this, "Status", "CONNECTED!!!",QMessageBox::Ok);
-
-     if (reply == QMessageBox::Ok)
-     {
-         con();
-         outs("popup.close");
-         clo();
-     }*/
 
 
 
-   con(true);
+   con();
    //Output1
 
        outs("Out1.selected?");
@@ -1152,7 +1256,7 @@ void MainWindow::on_connect_clicked()
        outs("In3.value?");
        outs("In4.value?");
 
-       clo(true);
+       clo();
 
        QFile file("/home/phy/ControlX/ctc.txt");
 
@@ -1171,7 +1275,7 @@ void MainWindow::on_connect_clicked()
 
                       QString temp;
 
-                      for(uint i=0;i<qstrlen(a)-3;i++)
+                      for(int i=0;i<int(qstrlen(a))-2;i++)
                        temp=temp+a[i];
                       //qDebug()<<temp;
 
@@ -1187,7 +1291,7 @@ void MainWindow::on_connect_clicked()
 
 
 
-                                 for(uint i=0;i<qstrlen(a)-3;i++)
+                                 for(int i=0;i<int(qstrlen(a))-2;i++)
                                  s[j]=s[j]+a[i];
 
                                j++;
@@ -1237,9 +1341,7 @@ void MainWindow::on_connect_clicked()
          }
          ui->comboBox->setCurrentText(s[1]);
 
-         ui->doubleSpinBox->setValue(s[2].toDouble());
 
-         ui->doubleSpinBox_2->setValue(s[3].toDouble());
 
          if(s[4]=="unselected")
              s[4]="Select";
@@ -1250,11 +1352,6 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_9->setValue(s[6].toDouble());
 
-         ui->doubleSpinBox_11->setValue(s[7].toDouble());
-
-         ui->doubleSpinBox_12->setValue(s[8].toDouble());
-
-         ui->doubleSpinBox_13->setValue(s[9].toDouble());
 
          qApp->processEvents();
          //qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -1292,10 +1389,6 @@ void MainWindow::on_connect_clicked()
          }
          ui->comboBox_5->setCurrentText(s[11]);
 
-         ui->doubleSpinBox_14->setValue(s[12].toDouble());
-
-         ui->doubleSpinBox_15->setValue(s[13].toDouble());
-
          if(s[14]=="unselected")
              s[14]="Select";
 
@@ -1305,11 +1398,7 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_20->setValue(s[16].toDouble());
 
-         ui->doubleSpinBox_22->setValue(s[17].toDouble());
 
-         ui->doubleSpinBox_23->setValue(s[18].toDouble());
-
-         ui->doubleSpinBox_24->setValue(s[19].toDouble());
 
          qApp->processEvents();
         // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -1464,7 +1553,7 @@ void MainWindow::on_connect_clicked()
 
 void MainWindow::on_out1mode_clicked()
 {
-    if(mode1==0)
+    if(mode1==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1504,23 +1593,6 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     clo();
 }
 
-void MainWindow::on_doubleSpinBox_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out1.LowLmt "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_2_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out1.HiLmt "+arg1);
-
-    clo();
-}
 
 
 void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
@@ -1539,6 +1611,12 @@ void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_doubleSpinBox_6_valueChanged(const QString &arg1)
 {
+
+    pidtab->setpt=arg1.toDouble();
+    powtab->setpoint=arg1.toDouble();
+
+    configure_pid(powtab->setpoint);
+    configure_power(powtab->setpoint);
     con();
 
     outs("Out1.PID.setpoint "+arg1);
@@ -1555,36 +1633,11 @@ void MainWindow::on_doubleSpinBox_9_valueChanged(const QString &arg1)
     clo();
 }
 
-void MainWindow::on_doubleSpinBox_11_valueChanged(const QString &arg1)
-{
-    con();
 
-    outs("Out1.PID.P "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_12_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out1.PID.I "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_13_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out1.PID.D "+arg1);
-
-    clo();
-}
 
 void MainWindow::on_out2mode_clicked()
 {
-    if(mode2==0)
+    if(mode2==1)
     {
         QPixmap pixmap(":/on-off.jpg");
         QIcon ButtonIcon(pixmap);
@@ -1622,23 +1675,7 @@ void MainWindow::on_comboBox_5_currentIndexChanged(const QString &arg1)
     clo();
 }
 
-void MainWindow::on_doubleSpinBox_14_valueChanged(const QString &arg1)
-{
-    con();
 
-    outs("Out2.LowLmt "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_15_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out2.HiLmt "+arg1);
-
-    clo();
-}
 
 void MainWindow::on_comboBox_6_currentIndexChanged(const QString &arg1)
 {
@@ -1656,6 +1693,12 @@ void MainWindow::on_comboBox_6_currentIndexChanged(const QString &arg1)
 
 void MainWindow::on_doubleSpinBox_17_valueChanged(const QString &arg1)
 {
+
+    pidtab->setpt=arg1.toDouble();
+    powtab->setpoint=arg1.toDouble();
+
+    configure_pid(powtab->setpoint);
+    configure_power(powtab->setpoint);
         con();
 
     outs("Out2.PID.setpoint "+arg1);
@@ -1673,32 +1716,7 @@ void MainWindow::on_doubleSpinBox_20_valueChanged(const QString &arg1)
     clo();
 }
 
-void MainWindow::on_doubleSpinBox_22_valueChanged(const QString &arg1)
-{
-    con();
 
-    outs("Out2.PID.P "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_23_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out2.PID.I "+arg1);
-
-    clo();
-}
-
-void MainWindow::on_doubleSpinBox_24_valueChanged(const QString &arg1)
-{
-    con();
-
-    outs("Out2.PID.D "+arg1);
-
-    clo();
-}
 
 void MainWindow::on_out2mode_2_clicked()
 {
@@ -2101,12 +2119,7 @@ void MainWindow::on_out2mode_4_clicked()
         mode4=!mode4;
 }
 
-/*void MainWindow::on_pushButton_6_clicked()
-{
-    //ptr = new wk(this);
-    ptr->show();
 
-}*/
 
 void MainWindow::on_meas_setup_clicked()
 {
@@ -2118,12 +2131,23 @@ void MainWindow::on_trace_setup_clicked()
     trace->show();
 }
 
-/*void MainWindow::on_doubleSpinBox_6_editingFinished()
-{
-    con();
-    double temp=ui->doubleSpinBox_6->value();
-    QString s=QString:
-    outs("Out1.PID.setpoint "+arg1);
 
-    clo();
-}*/
+void MainWindow::on_powlmt2_clicked()
+{
+    powtab->show();
+}
+
+void MainWindow::on_pidctrl2_clicked()
+{
+    pidtab->show();
+}
+
+void MainWindow::on_pidctrl1_clicked()
+{
+    pidtab->show();
+}
+
+void MainWindow::on_powlmt1_clicked()
+{
+    powtab->show();
+}

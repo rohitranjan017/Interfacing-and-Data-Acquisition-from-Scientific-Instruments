@@ -15,18 +15,24 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     measureset.cpp \
-    traceset.cpp
+    traceset.cpp \
+    power.cpp \
+    controlpid.cpp
 
 HEADERS  += mainwindow.h \
     measureset.h \
     traceset.h \
     allfun.h \
     allfun3.h \
-    allfun6.h
+    allfun6.h \
+    power.h \
+    controlpid.h
 
 FORMS    += mainwindow.ui \
     measureset.ui \
-    traceset.ui
+    traceset.ui \
+    power.ui \
+    controlpid.ui
 
 DISTFILES += \
     button_ctc100.png
