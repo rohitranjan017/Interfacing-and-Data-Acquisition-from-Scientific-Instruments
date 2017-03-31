@@ -1,8 +1,13 @@
-Script started on Saturday 01 April 2017 04:59:09 PM IST
+Script started on Saturday 01 April 2017 07:28:21 PM IST
 spawn telnet 100.10.19.37
 
 
-outputEnable = off
+Out2.PID.P 15
+Out1.PID.P 15
+Out2.PID.I 0.2
+Out1.PID.I 0.2
+Out2.PID.D 0
+Out1.PID.D 0
 system.other.reset Ports
 Trying 100.10.19.37...
 Connected to 100.10.19.37.
@@ -10,4 +15,4 @@ Escape character is '^]'.
 Error: "ûû" is not a valid instruction
 Connection closed by foreign host.
 
-Script done on Saturday 01 April 2017 04:59:09 PM IST
+Script done on Saturday 01 April 2017 07:28:21 PM IST

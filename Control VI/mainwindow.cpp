@@ -28,9 +28,8 @@ int datapoints;
 int noof_points;
 int firstx;
 char sensor_type1='R',sensor_type2='R',sensor_type3='R',sensor_type4='R';
-bool output_status,output_mode1,output_mode2=0,output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;// PUCHO ROHITH SE
+bool output_status,output_mode1,output_mode2=0,output_mode3,output_mode4,input_mode1,input_mode2,input_mode3,input_mode4;
 QString sensor_range[11]={ "10ê", "30ê", "100ê", "300ê", "1kê", "3kê", "10kê", "30kê", "100kê","300kê","Auto" };
-//QString prop[12]={"L","C","Q","D","R","X","Z","Y","Angle","B","G","L"};
 
 QFile file("/home/phy/ControlVI/script.sh");
 
@@ -456,10 +455,6 @@ void MainWindow::conduct(int temp)
     outs("In"+QString::number(temp)+".value?");
     clo();
 
-    /*if(impdel==1)
-        ui->pushButton_3->setStyleSheet("background-color:green");
-    else
-        ui->pushButton_5->setStyleSheet("background-color:green");*/
 
     QFile file("/home/phy/ControlVI/ctc.txt");
 
@@ -1158,7 +1153,8 @@ void MainWindow::on_pushButton_2_clicked()
             QTextStream out(&file1);
 
 out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSetFieldWidth(20)<<"Current(A)"<<qSetFieldWidth(20)<<"Resistance(Ω)"<<endl;
-            ui->pushButton_2->setStyleSheet("background-color:red");
+
+ui->pushButton_2->setStyleSheet("background-color:red");
             con();
             outs("outputEnable = on");
             clo();
@@ -1190,6 +1186,7 @@ out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSe
         start_connection();
         write_command("OUTP 1");
         stop_connection();
+
         point=0;
         series->clear();
 
@@ -1275,7 +1272,7 @@ void MainWindow::on_connect_clicked()
        clo();
 
        QFile file("/home/phy/ControlVI/ctc.txt");
-//qDebug()<<"^^^^^^^^^";
+
 
      QString s[100];
      int j=0;
@@ -1283,7 +1280,7 @@ void MainWindow::on_connect_clicked()
 
 
          while (!file.atEnd())
-         {//qDebug()<<"%%%%%%%%%%%%%%%%%%%";
+         {
 
                   char a[1025];
 
@@ -1365,9 +1362,7 @@ void MainWindow::on_connect_clicked()
          }
          ui->comboBox->setCurrentText(s[1]);
 
-         //ui->doubleSpinBox->setValue(s[2].toDouble());
 
-         //ui->doubleSpinBox_2->setValue(s[3].toDouble());
 
          if(s[4]=="unselected")
              s[4]="Select";
@@ -1378,11 +1373,6 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_9->setValue(s[6].toDouble());
 
-         //ui->doubleSpinBox_11->setValue(s[7].toDouble());
-
-         //ui->doubleSpinBox_12->setValue(s[8].toDouble());
-
-         //ui->doubleSpinBox_13->setValue(s[9].toDouble());
 
          qApp->processEvents();
          //qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -1420,9 +1410,6 @@ void MainWindow::on_connect_clicked()
          }
          ui->comboBox_5->setCurrentText(s[11]);
 
-         //ui->doubleSpinBox_14->setValue(s[12].toDouble());
-
-         //ui->doubleSpinBox_15->setValue(s[13].toDouble());
 
          if(s[14]=="unselected")
              s[14]="Select";
@@ -1433,11 +1420,7 @@ void MainWindow::on_connect_clicked()
 
          ui->doubleSpinBox_20->setValue(s[16].toDouble());
 
-         //ui->doubleSpinBox_22->setValue(s[17].toDouble());
 
-         //ui->doubleSpinBox_23->setValue(s[18].toDouble());
-
-         //ui->doubleSpinBox_24->setValue(s[19].toDouble());
 
          qApp->processEvents();
         // qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -1593,7 +1576,7 @@ void MainWindow::on_connect_clicked()
 void MainWindow::on_out1mode_clicked()
 {
 
-    qDebug()<<"CHINDI PELU"<<endl;
+
     if(output_mode1==1)
     {
         QPixmap pixmap(":/on-off.jpg");
@@ -1719,12 +1702,7 @@ void MainWindow::on_doubleSpinBox_13_valueChanged(const QString &arg1)
 
 void MainWindow::on_out2mode_clicked()
 {
-    QFile decr("bggy.txt");
 
-    decr.open(QIODevice::Append);
-    QTextStream obj(&decr);
-    obj<<output_mode2<<" ";
-    qDebug()<<output_mode2<<" ";
     if(output_mode2==1)
     {
         QPixmap pixmap(":/on-off.jpg");
@@ -1749,9 +1727,7 @@ void MainWindow::on_out2mode_clicked()
     }
 
     output_mode2=!output_mode2;
-qDebug()<<output_mode2<<endl;
-    obj<<output_mode2<<" "<<endl;
-    decr.close();
+
 }
 
 void MainWindow::on_comboBox_5_currentIndexChanged(const QString &arg1)

@@ -1,12 +1,12 @@
-Script started on Saturday 01 April 2017 04:46:23 PM IST
+Script started on Saturday 01 April 2017 05:38:19 PM IST
 spawn ibtest
-d
-6
-w
-SOUR:CURR 0.012
-q
 Do you wish to open a (d)evice or an interface (b)oard?
-	(you probably want to open a device): enter primary gpib address for device you wish to open [0-30]: trying to open pad = 6 on /dev/gpib0 ...
+	(you probably want to open a device): d
+enter primary gpib address for device you wish to open [0-30]: 6
+trying to open pad = 6 on /dev/gpib0 ...
+w
+SOUR:CURR:RANG:AUTO 1
+q
 You can:
 	w(a)it for an event
 	write (c)ommand bytes to bus (system controller only)
@@ -24,13 +24,13 @@ You can:
 	change (t)imeout on io operations
 	request ser(v)ice (board only)
 	(w)rite data string
-: enter a string to send to your device: sending string: SOUR:CURR 0.012
+: enter a string to send to your device: sending string: SOUR:CURR:RANG:AUTO 1
 
 gpib status is: 
 ibsta = 0x2100  < END CMPL >
 iberr= 0
 
-ibcnt = 16
+ibcnt = 22
 You can:
 	w(a)it for an event
 	write (c)ommand bytes to bus (system controller only)
@@ -49,4 +49,4 @@ You can:
 	request ser(v)ice (board only)
 	(w)rite data string
 : 
-Script done on Saturday 01 April 2017 04:46:23 PM IST
+Script done on Saturday 01 April 2017 05:38:19 PM IST
