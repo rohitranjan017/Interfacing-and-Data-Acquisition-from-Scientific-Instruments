@@ -83,7 +83,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -397,7 +397,7 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="value">
-        <double>0.050000000000000</double>
+        <double>0.100000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_37">
@@ -477,7 +477,7 @@
         <number>100000</number>
        </property>
        <property name="value">
-        <number>300</number>
+        <number>50</number>
        </property>
       </widget>
       <widget class="QDoubleSpinBox" name="doubleSpinBox_62">
@@ -493,7 +493,7 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="value">
-        <double>0.050000000000000</double>
+        <double>0.200000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_100">
@@ -1410,7 +1410,7 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="value">
-        <double>0.050000000000000</double>
+        <double>0.100000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_66">
@@ -1493,7 +1493,7 @@
         <number>1000</number>
        </property>
        <property name="value">
-        <number>100</number>
+        <number>50</number>
        </property>
       </widget>
       <widget class="QLabel" name="label_99">
@@ -1525,7 +1525,7 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="value">
-        <double>0.050000000000000</double>
+        <double>0.200000000000000</double>
        </property>
       </widget>
       <widget class="QPushButton" name="powlmt2">

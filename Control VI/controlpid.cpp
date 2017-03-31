@@ -96,6 +96,7 @@ controlpid::controlpid(QWidget *parent) :
     ui(new Ui::controlpid)
 {
     ui->setupUi(this);
+    ui->groupBox_2->setDisabled(true);
 }
 
 
@@ -107,6 +108,7 @@ controlpid::~controlpid()
 void controlpid::on_Staticmode_clicked()
 {
     ui->groupBox_3->setDisabled(true);
+    ui->groupBox_2->setEnabled(true);
     conpid();
 
     outspid("Out2.PID.P "+QString::number(ui->pstat->value()));
@@ -123,6 +125,91 @@ void controlpid::on_Staticmode_clicked()
 void controlpid::on_Variablemode_clicked()
 {
      ui->groupBox_2->setDisabled(true);
+     ui->groupBox_3->setEnabled(true);
+
+     if(setpt <150)
+     {
+         conpid();
+
+         outspid("Out1.PID.P "+QString::number(p150));
+         outspid("Out2.PID.P "+QString::number(p150));
+         outspid("Out1.PID.I "+QString::number(i150));
+         outspid("Out2.PID.I "+QString::number(i150));
+         outspid("Out1.PID.D "+QString::number(d150));
+         outspid("Out2.PID.D "+QString::number(d150));
+
+         clopid();
+     }
+     else
+     if(setpt < 200)
+     {
+
+         conpid();
+
+         outspid("Out1.PID.P "+QString::number(p200));
+         outspid("Out2.PID.P "+QString::number(p200));
+         outspid("Out1.PID.I "+QString::number(i200));
+         outspid("Out2.PID.I "+QString::number(i200));
+         outspid("Out1.PID.D "+QString::number(d200));
+         outspid("Out2.PID.D "+QString::number(d200));
+
+         clopid();
+     }
+     else
+     if(setpt < 250)
+     {
+         conpid();
+
+         outspid("Out1.PID.P "+QString::number(p250));
+         outspid("Out2.PID.P "+QString::number(p250));
+         outspid("Out1.PID.I "+QString::number(i250));
+         outspid("Out2.PID.I "+QString::number(i250));
+         outspid("Out1.PID.D "+QString::number(d250));
+         outspid("Out2.PID.D "+QString::number(d250));
+
+         clopid();
+     }
+     else
+     if(setpt < 300)
+     {
+         conpid();
+         outspid("Out1.PID.P "+QString::number(p300));
+         outspid("Out2.PID.P "+QString::number(p300));
+         outspid("Out1.PID.I "+QString::number(i300));
+         outspid("Out2.PID.I "+QString::number(i300));
+         outspid("Out1.PID.D "+QString::number(d300));
+         outspid("Out2.PID.D "+QString::number(d300));
+
+         clopid();
+     }
+     else
+     if(setpt < 350)
+     {
+         conpid();
+
+         outspid("Out1.PID.P "+QString::number(p350));
+         outspid("Out2.PID.P "+QString::number(p350));
+         outspid("Out1.PID.I "+QString::number(i350));
+         outspid("Out2.PID.I "+QString::number(i350));
+         outspid("Out1.PID.D "+QString::number(d350));
+         outspid("Out2.PID.D "+QString::number(d350));
+
+         clopid();
+     }
+     else
+     {
+         conpid();
+
+         outspid("Out1.PID.P "+QString::number(p400));
+         outspid("Out2.PID.P "+QString::number(p400));
+         outspid("Out1.PID.I "+QString::number(i400));
+         outspid("Out2.PID.I "+QString::number(i400));
+         outspid("Out1.PID.D "+QString::number(d400));
+         outspid("Out2.PID.D "+QString::number(d400));
+
+         clopid();
+     }
+
      mode=1;
 }
 

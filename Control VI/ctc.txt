@@ -1,4 +1,4 @@
-Script started on Thursday 30 March 2017 08:50:48 PM IST
+Script started on Saturday 01 April 2017 04:59:09 PM IST
 spawn telnet 100.10.19.37
 
 
@@ -10,4 +10,4 @@ Escape character is '^]'.
 Error: "ûû" is not a valid instruction
 Connection closed by foreign host.
 
-Script done on Thursday 30 March 2017 08:50:48 PM IST
+Script done on Saturday 01 April 2017 04:59:09 PM IST

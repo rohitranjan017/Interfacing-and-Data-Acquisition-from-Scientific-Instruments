@@ -13,7 +13,7 @@ class power : public QWidget
 
 public:
     double setpoint;
-    double pow150,pow200,pow250,pow300,pow350,pow400;
+    double pow150=2,pow200=3,pow250=4,pow300=6,pow350=7,pow400=8;
     explicit power(QWidget *parent = 0);
     ~power();
 

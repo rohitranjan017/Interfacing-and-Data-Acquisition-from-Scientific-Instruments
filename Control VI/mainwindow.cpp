@@ -221,12 +221,9 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow150));
+        outs("Out2.HiLmt "+QString::number(powtab->pow150));
+
 
         clo();
     }
@@ -235,12 +232,9 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow200));
+        outs("Out2.HiLmt "+QString::number(powtab->pow200));
+
 
         clo();
     }
@@ -249,12 +243,8 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow250));
+        outs("Out2.HiLmt "+QString::number(powtab->pow250));
 
         clo();
     }
@@ -263,12 +253,9 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow300));
+        outs("Out2.HiLmt "+QString::number(powtab->pow300));
+
 
         clo();
     }
@@ -277,12 +264,9 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow350));
+        outs("Out2.HiLmt "+QString::number(powtab->pow350));
+
 
         clo();
     }
@@ -290,12 +274,8 @@ void MainWindow::configure_power(double setpoint)
     {
         con();
 
-        outs("Out1.PID.P "+QString::number(pidtab->p150));
-        outs("Out2.PID.P "+QString::number(pidtab->p150));
-        outs("Out1.PID.I "+QString::number(pidtab->i150));
-        outs("Out2.PID.I "+QString::number(pidtab->i150));
-        outs("Out1.PID.D "+QString::number(pidtab->d150));
-        outs("Out2.PID.D "+QString::number(pidtab->d150));
+        outs("Out1.HiLmt "+QString::number(powtab->pow400));
+        outs("Out2.HiLmt "+QString::number(powtab->pow400));
 
         clo();
     }
@@ -713,6 +693,10 @@ void MainWindow::conduct(int temp)
 }
 MainWindow::~MainWindow()
 {
+    powtab->close();
+    pidtab->close();
+    ke2->close();
+    ke6->close();
     delete ui;
 }
 
@@ -1210,7 +1194,10 @@ out<<qSetFieldWidth(20)<<"Temperature(K)"<<qSetFieldWidth(20)<<"Voltage(V)"<<qSe
         series->clear();
 
 
-
+        if(output_mode3==1)
+                powtab->setpoint=pidtab->setpt=ui->doubleSpinBox_6->value();
+        else
+            powtab->setpoint=pidtab->setpt=ui->doubleSpinBox_17->value();
 
         configure_power(powtab->setpoint);
         configure_pid(powtab->setpoint);
@@ -1685,6 +1672,8 @@ void MainWindow::on_doubleSpinBox_6_valueChanged(const QString &arg1)
     pidtab->setpt=arg1.toDouble();
     powtab->setpoint=arg1.toDouble();
 
+    configure_pid(powtab->setpoint);
+    configure_power(powtab->setpoint);
     con();
 
     outs("Out1.PID.setpoint "+arg1);
@@ -1814,6 +1803,8 @@ void MainWindow::on_doubleSpinBox_17_valueChanged(const QString &arg1)
     pidtab->setpt=arg1.toDouble();
     powtab->setpoint=arg1.toDouble();
 
+    configure_pid(powtab->setpoint);
+    configure_power(powtab->setpoint);
     con();
 
     outs("Out2.PID.setpoint "+arg1);

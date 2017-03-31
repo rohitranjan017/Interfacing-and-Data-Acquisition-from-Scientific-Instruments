@@ -13,7 +13,7 @@ class controlpid : public QWidget
 
 public:
     double setpt;
-    double p150,p200,p250,p300,p350,p400,i150,i200,i250,i300,i350,i400,d150,d200,d250,d300,d350,d400;
+    double p150=11.35,p200=17.5,p250=22.5,p300=27.5,p350=32.5,p400=37.5,i150=0.567,i200=0.875,i250=1.125,i300=1.375,i350=1.625,i400=1.875,d150=0.378,d200=0.583,d250=0.750,d300=0.917,d350=1.083,d400=1.250;
     bool mode=1;
     explicit controlpid(QWidget *parent = 0);
     ~controlpid();

@@ -1,4 +1,4 @@
-Script started on Thursday 30 March 2017 04:01:37 AM IST
+Script started on Saturday 01 April 2017 03:18:06 PM IST
 mkdir: cannot create directory ‘first’: File exists
 
-Script done on Thursday 30 March 2017 04:01:37 AM IST
+Script done on Saturday 01 April 2017 03:18:06 PM IST
